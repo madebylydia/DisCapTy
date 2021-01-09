@@ -1,4 +1,4 @@
-Beta 0.3.1
+Beta 0.3.2
 ==========
 * Install requirements throught pip
 * Fix a missing fonts file?
