@@ -4,6 +4,11 @@ import discapty
 with open(file="README.md", mode="r", encoding="utf-8") as readme:
     long_description = readme.read()
 
+requirements = []
+with open('requirements.txt', 'r') as fh:
+    for line in fh:
+        requirements.append(line.strip())
+
 setuptools.setup(
     name="DisCapTy",
     version=discapty.__version__,
@@ -22,4 +27,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.8',
+    install_requires=requirements
 )
