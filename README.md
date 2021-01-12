@@ -25,11 +25,12 @@ Plain is text, the text is "coded" to be sure the user cannot copy and paste the
 import discapty
 
 async def testme():
-    my_captcha = discapty.Captcha("plain")  # Creating my plain captcha without code, if so, a random code is generated.
-    # At this point, the code is generated and can already be 
-    # verified, but if we want an output of a generated captcha, 
+    my_captcha: discapty.Captcha = discapty.Captcha("plain")  # Creating my plain captcha without code, if so, a random code is generated.
+    # At this point, the code is generated randomly and can already be 
+    # verified, but if we want an output of a generated captcha text/image, 
     # use my_captcha.generate_captcha.
-    await my_captcha.verify_code(str("SXCU"))  # True
+    await my_captcha.verify_code(str("SXCU"))
+    # True
 ```
 
 As long as you use "plain" type, you should receive string as the output of `discapy.Captcha.generate_captcha`, but when it comes to "image" and "wheezy", we receive BytesIO objects.
@@ -38,8 +39,8 @@ As long as you use "plain" type, you should receive string as the output of `dis
 import discapty
 
 async def generate():
-    my_captcha = discapty.Captcha("wheezy")
-    my_image = await my_captcha.generate_captcha(str("SXCU"))
+    my_captcha: discapty.Captcha = discapty.Captcha("wheezy")
+    await my_captcha.generate_captcha(str("SXCU"))
     # <_io.BytesIO object at XxXXX>
 ```
 
@@ -49,8 +50,8 @@ If you just want to create an embed to send when challenging your member, there 
 import discapty
 
 async def sendcaptcha():
-    my_captcha = discapty.Captcha("image")
-    my_embed: dict = await my_captcha.generate_embed(str("Red - Discord Bot"), title=str("Verification of my Discord server!!!"))
+    my_captcha: discapty.Captcha = discapty.Captcha("image")
+    my_embed: dict = await my_captcha.generate_embed(str("Red - Discord Bot"), title=str("Verification of my Discord server!"))
     await ctx.channel.send(embed=my_embed["embed"], file=my_embed["image"])
 # We use a dict since we may send an image with our embed with the message to get included.
 ```
