@@ -1,4 +1,4 @@
 __author__ = "Predeactor"
-__version__ = "0.3.3"
+__version__ = "0.4"
 
 from .discapty import Captcha, SameCodeError

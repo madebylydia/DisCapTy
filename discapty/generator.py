@@ -5,7 +5,6 @@ from PIL import Image
 from PIL import ImageFilter
 from PIL.ImageDraw import Draw
 from PIL.ImageFont import truetype
-from io import BytesIO
 from wheezy.captcha import image as wheezy_captcha
 
 path = join(abspath(dirname(__file__)), 'fonts')
@@ -186,7 +185,7 @@ class ImageCaptcha:
 class PlainCaptcha:
 
     @staticmethod
-    async def generate(code: str, *, width=0, height=0):
+    async def generate(code: str):
         return ESCAPE_CHAR.join(code)
 
 
