@@ -17,7 +17,7 @@ setuptools.setup(
     description="An easy generator of Captcha for Discord bots, creating embeds and images.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Predeactor/discapty",
+    url="https://github.com/Charlemagne-3/discapty",
     packages=setuptools.find_packages(),
     include_package_data=True,
     classifiers=[
