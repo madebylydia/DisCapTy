@@ -3,7 +3,6 @@
 
 DisCaPty is a super generator for creating captcha images/text and embed for your server.
 
-
 ## Installing
 
 DisCaPty is available on PyPi!
@@ -58,9 +57,4 @@ async def sendcaptcha():
 
 ## Contact
 
-There is no real support for this package, I made to make my life easier with my cogs, but feel free to open an issue, or a pull request.
-I'll be more than happy to review.
-My E-mail is ``predeactor0@gmail.com`` in case you need it.
-My Discord is ``Capitaine Predeactor#0495``
-
-Yes, the docs isn't very... impressive...
+You can join the Charlemagne/3 Discord server for any help: https://discord.gg/rD7TTrUcjw
