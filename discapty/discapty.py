@@ -12,9 +12,9 @@ from .typehint import Author, Footer
 from .utils import ESCAPE_CHAR, random_code
 
 TYPES = {
-    "wheezy": WheezyCaptcha(),
-    "image": ImageCaptcha(),
-    "text": TextCaptcha(),
+    "wheezy": WheezyCaptcha,
+    "image": ImageCaptcha,
+    "text": TextCaptcha,
 }
 
 
@@ -47,7 +47,7 @@ class Captcha:
         self.code: str = code or random_code()
         self.captcha: Union[WheezyCaptcha, ImageCaptcha, TextCaptcha] = TYPES[
             captcha_type
-        ]
+        ]()
 
     async def generate_captcha(self) -> Union[BytesIO, str]:
         """Generate the captcha image or text.
