@@ -88,7 +88,7 @@ class ImageCaptcha(CaptchaGen):
         return tuple(PIL.ImageFont.truetype(n, s) for n in font for s in font_sizes)
 
     @staticmethod
-    async def create_noise_curve(image: PIL.Image, color: Tuple[int, int, int]):
+    def create_noise_curve(image: PIL.Image, color: Tuple[int, int, int]):
         w, h = image.size
         x1 = random.randint(0, int(w / 5))
         x2 = random.randint(w - int(w / 5), w)
@@ -101,7 +101,7 @@ class ImageCaptcha(CaptchaGen):
         return image
 
     @staticmethod
-    async def create_noise_dots(
+    def create_noise_dots(
         image: PIL.Image, color: Tuple[int, int, int], width: int = 3, number: int = 30
     ):
         draw = PIL.ImageDraw.Draw(image)
@@ -114,7 +114,7 @@ class ImageCaptcha(CaptchaGen):
             number -= 1
         return image
 
-    async def create_captcha_image(
+    def create_captcha_image(
         self,
         chars: str,
         *,
@@ -231,15 +231,15 @@ class ImageCaptcha(CaptchaGen):
         background = random_color(238, 255)
         color = random_color(10, 200, random.randint(220, 255))
         fonts = self.get_truefonts()
-        im = await self.create_captcha_image(
+        im = self.create_captcha_image(
             code_to_generate,
             color=color,
             background=background,
             width=width,
             height=height,
         )
-        await self.create_noise_dots(im, color)
-        await self.create_noise_curve(im, color)
+        self.create_noise_dots(im, color)
+        self.create_noise_curve(im, color)
         im = im.filter(PIL.ImageFilter.SMOOTH)
         return im
 

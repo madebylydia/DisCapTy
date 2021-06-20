@@ -1,7 +1,7 @@
 # DisCaPty
 *The super hard-to-use module to make your super-hard-coded captcha image for Discord.py.*
 
-DisCaPty is a super generator for creating captcha images/text and embed for your server.
+DisCaPty is a Captcha's generator for generating captcha and embed for your servers.
 
 ## Installing
 
