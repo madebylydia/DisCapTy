@@ -1,99 +1,107 @@
 from datetime import datetime
+from io import BytesIO
+from typing import Optional, Union
+
 # noinspection PyPackageRequirements
 import discord
-from io import BytesIO
-from string import ascii_uppercase, digits
-from random import SystemRandom
-from typing import Union, Mapping
-from .generator import WheezyCaptcha, ImageCaptcha, PlainCaptcha
+from PIL import Image
 
+from .exceptions import CopyPasteError
+from .generator import ImageCaptcha, TextCaptcha, WheezyCaptcha
+from .typehint import Author, Footer
+from .utils import ESCAPE_CHAR, random_code
 
-def random_code(length: int = 8):
-    return "".join(SystemRandom().choice(ascii_uppercase + digits) for _ in range(length))
-
-
-types = {
-    "wheezy": WheezyCaptcha(width=350, height=100),
-    "image": ImageCaptcha(width=350, height=100),
-    "plain": PlainCaptcha(),
+TYPES = {
+    "wheezy": WheezyCaptcha(),
+    "image": ImageCaptcha(),
+    "text": TextCaptcha(),
 }
-
-
-class SameCodeError(Exception):
-    """
-    An error raised if the user sent the exact same code of the generated code when using a
-    PlainCaptcha captcha type.
-    """
-
-    pass
 
 
 class Captcha:
     """The representation of a captcha.
 
     This is the class that will create the captcha and his code if necessary.
-
     """
 
-    def __init__(self, captcha_type: types, *, code: str = None):
+    def __init__(self, captcha_type: TYPES, *, code: Optional[str] = None):
         """
         Initializes class instance.
 
-        :param captcha_type: What kind of captcha must be generated.
-            Can be either "image", "plain" or "wheezy".
-        :param code: The code you wish to use with the captcha.
+        Parameters
+        ----------
+        captcha_type: str
+            What kind of captcha must be generated.
+            Can be either "image", "wheezy" or "text".
+        code: str
+            The code you wish to use with the captcha. Optional. If none is given,
+            a random code is generated.
+
+        Raises
+        ------
+        KeyError:
+            The given captcha type is not available in DisCapTy.
         """
-        if captcha_type not in types:
-            raise KeyError("Given type {type} is not available.".format(type=captcha_type))
+        if captcha_type not in TYPES:
+            raise KeyError("Given type %s is not available." % captcha_type)
         self.code: str = code or random_code()
-        self.generated_code: str = code  # This is in case we are using PlainCaptcha.
-        self.captcha: types = types[captcha_type]
+        self.captcha: Union[WheezyCaptcha, ImageCaptcha, TextCaptcha] = TYPES[
+            captcha_type
+        ]
 
-    async def generate_captcha(
-        self, code: str = None, *, force_no_edit: bool = False
-    ) -> Union[BytesIO, str]:
-        """Generate the captcha image.
-        In case the choosen captcha type is plain, a string will be returned.
+    async def generate_captcha(self) -> Union[BytesIO, str]:
+        """Generate the captcha image or text.
+        In case the choosen captcha type is TextCaptcha, a string will be returned, otherwise
+        it will be a BytesIO object.
 
-        :param code: Optional. The code that must be used. If omitted, the class that was set
-            on class inheritance will be used. Using this parameter will overwrite the old
-            self.code with the one given.
-        :param force_no_edit: Optional. If you do not want to overwrite the code when using "code"
-            parameter. Defaults to False.
-
-        :return: A BytesIO objecting containing the image, can be used as a file to send. If the
-            captcha type is an instance of PlainCaptcha, a string will be returned.
+        Returns
+        -------
+        io.BytesIO: The image. Can be used as a file to send. If the captcha type is text, a
+            string will be returned instead.
         """
-        if code and not force_no_edit:
-            self.code = code
-        if not isinstance(self.captcha, PlainCaptcha):
-            image = await self.captcha.generate(self.code)
+
+        if not isinstance(self.captcha, TextCaptcha):
+            image: Image = self.captcha.generate(self.code)
             out = BytesIO()
+            # Typehint think it's Union[BytesIO, str] which trigger PyLint
+            # noinspection PyUnresolvedReferences
             image.save(out, format="png")
             out.seek(0)
             return out
-        self.generated_code = await self.captcha.generate(self.code)
-        return self.generated_code
+
+        return self.captcha.generate()
 
     async def generate_embed(
-        self, guild_name: str,
-        author: Mapping[str, str] = None,
-        footer: Mapping[str, str] = None,
-        **kwargs
-    ) -> dict:
+        self,
+        guild_name: str,
+        *,
+        author: Optional[Author] = None,
+        footer: Optional[Footer] = None,
+        **kwargs,
+    ) -> discord.Embed:
         """
-        Generate a pre-build embed for your guild.
+        Generate a pre-build embed for your guild. Can be customized with kwargs.
 
-        :param guild_name: The name of the guild we are generating the embed for. Will be shown on
+        If you're generating a captcha that is not a TextCaptcha, an image can be uploaded
+        inside the captcha by sending an attachment with the captcha that is called
+        "captcha.png".
+
+        Parameters
+        ----------
+        guild_name: str
+            The name of the guild we are generating the embed for. Will be shown on
             the embed title if not edited.
-        :param author: A mapping that can contain ``name`` and ``url`` as the key, they will be
-            shown at the author field. (Top of the embed)
+        author: Optional[Dict[str, str]]
+            A mapping that can contain ``name`` and ``url`` as the key, they will be
+            shown at the author field. (Top of the embed). Optional.
             ``name`` will be the text and ``url`` the icon's URL that will be shown.
-        :param footer: A mapping that can contain ``text`` and ``url`` as the key, they will be
-            shown on the footer. (Bottom of the embed)
+        footer: Optional[Dict[str, str]]
+            A mapping that can contain ``text`` and ``url`` as the key, they will be
+            shown on the footer. (Bottom of the embed). Optional.
             ``text`` will be the text and ``url`` the icon's URL that will be shown.
 
-        :param kwargs: Set given parameters as the content of the embed.
+        kwargs:
+            Set given parameters as the content of the embed.
             The kwarg name can be either:
             - Setting the embed's color: ``colour`` or ``color``
             - Setting the embed's clickable URL on title: ``title_url``
@@ -101,25 +109,27 @@ class Captcha:
             - Setting the embed's description: ``description``
             - Setting the embed's timestamp: ``timestamp``
             - Setting the embed's thumbnail: ``thumbnail``
+            - Setting the embed's image URL: ``image_url``. By default
+            ``attachment://captcha.png``.
 
-        :return: A dict containing the embed and the image to send if necessary, can be None.
-            >>> {"embed": discord.Embed, "image": discord.File or None}
-            This is what must be used for sending the captcha.
+        Return
+        ------
+        discord.Embed: The generated embed.
         """
 
-        # Part of the code "stolen" to Cog-Creators/Red-DiscordBot.
-        # https://predeactor.please-end.me/AILdT65
-        # Basically, this part allow creators to use parameters to set different fields in the embed.
+        # Part of the code taken from Cog-Creators/Red-DiscordBot.
+        # https://github.com/Cog-Creators/Red-DiscordBot/blob/b2db0674d5b4256c4747e1ac17e08f156241a206/redbot/cogs/audio/core/utilities/miscellaneous.py#L66
+        # Basically, this part allow developers to use parameters to set different fields in the embed.
 
         # Get everything we need from kwargs.
         colour = kwargs.get("colour") or kwargs.get("color")
-        title = kwargs.get("title", "{guild} Captcha Verification".format(guild=guild_name))
-        _type = kwargs.get("type", "rich") or "rich"
-        title_url = kwargs.get("title_url", discord.embeds.EmptyEmbed) or discord.embeds.EmptyEmbed
-        timestamp = kwargs.get("timestamp", discord.embeds.EmptyEmbed) or discord.embeds.EmptyEmbed
-        thumbnail = kwargs.get("thumbnail", discord.embeds.EmptyEmbed) or discord.embeds.EmptyEmbed
-        description = (
-            kwargs.get("description", "Please return me the code written on the following image.")
+        title = kwargs.get("title", f"{guild_name} Captcha Verification")
+        _type = kwargs.get("type", "rich")
+        title_url = kwargs.get("title_url", discord.embeds.EmptyEmbed)
+        timestamp = kwargs.get("timestamp", discord.embeds.EmptyEmbed)
+        thumbnail = kwargs.get("thumbnail", discord.embeds.EmptyEmbed)
+        description = kwargs.get(
+            "description", "Please return the code written on the captcha."
         )
         contents = dict(title=title, type=_type, url=title_url, description=description)
 
@@ -149,43 +159,42 @@ class Captcha:
             url = author.get("url", discord.embeds.EmptyEmbed)
             embed.set_author(name=name, icon_url=url)
 
-        captcha = await self.generate_captcha()
-        if isinstance(self.captcha, PlainCaptcha):
-            embed.description = "Please return me the following code:\n```{code}```\nDo not copy and paste.".format(
-                code=captcha
-            )
-        if not isinstance(self.captcha, PlainCaptcha):
-            embed.set_image(url="attachment://captcha.png")
+        #
+        if not isinstance(self.captcha, TextCaptcha):
+            embed.set_image(url=kwargs.get("image_url", "attachment://captcha.png"))
 
-        return {
-            "embed": embed,
-            "image": discord.File(captcha, filename="captcha.png")
-            if not isinstance(self.captcha, PlainCaptcha)
-            else None,
-        }
+        return embed
 
-    async def verify_code(self, user_input: str, *, ignore_case: bool = True):
+    def verify_code(self, user_input: str, *, ignore_case: bool = False):
         """Verify the code with the generated code.
 
-        :param user_input: The code we are verifying.
-        :param ignore_case: Verificating ignore case by default, overwrite this
-            parameter to make the verification important to lower and upper case.
+        Parameters
+        ----------
+        user_input: str
+            The code we are verifying.
+        ignore_case: bool
+            Verificating ignore case by default, overwrite this parameter to make the
+            verification important to lower and upper case.
 
-        :raise SameCodeError: If the code is the same as what was generated when generating the
-            captcha code of PlainCaptcha.
+        Raises
+        ------
+        CopyPasteError:
+            If the code is the same as what was generated when generating the captcha code of
+            PlainCaptcha.
 
-        :return: A boolean representing if the code is equal to what was generated.
+        Return
+        ------
+        bool:
+            If the code is equal the same that what was generated.
         """
-        obfuscated_code = self.generated_code
-        code = self.code
-        if ignore_case:
-            user_input = user_input.upper()
-            code = self.code.upper()
-            if obfuscated_code is not None:
-                obfuscated_code = obfuscated_code.upper()
-        if isinstance(self.captcha, PlainCaptcha):
-            if user_input == obfuscated_code:
-                raise SameCodeError()
-        if user_input != code:
-            return False
-        return True
+        obfuscated_code = ESCAPE_CHAR.join(self.code)
+        if not ignore_case:
+            user_input = user_input.lower()
+            code = self.code.lower()
+            obfuscated_code = obfuscated_code.lower()
+        else:
+            code = self.code
+
+        if isinstance(self.captcha, TextCaptcha) and user_input == obfuscated_code:
+            raise CopyPasteError()
+        return user_input == code
