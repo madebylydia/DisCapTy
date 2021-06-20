@@ -19,7 +19,7 @@ DEFAULT_FONTS = [join(path, f) for f in listdir(path) if isfile(join(path, f))]
 class WheezyCaptcha(CaptchaGen):
     """Create an image CAPTCHA with wheezy.captcha."""
 
-    def __init__(self, *, fonts: List[Union[PathLike, str]]):
+    def __init__(self, *, fonts: List[Union[PathLike, str]] = None):
         super().__init__(fonts=fonts)
         self.fonts: List[Union[PathLike, str]] = fonts or DEFAULT_FONTS
 
@@ -70,8 +70,8 @@ class ImageCaptcha(CaptchaGen):
     def __init__(
         self,
         *,
-        fonts: Optional[List[Union[PathLike, str]]],
-        fonts_size: Optional[Tuple[int]]
+        fonts: Optional[List[Union[PathLike, str]]] = None,
+        fonts_size: Optional[Tuple[int]] = None
     ):
         super().__init__(fonts=fonts)
         self.fonts: List[Union[PathLike, str]] = fonts or DEFAULT_FONTS
