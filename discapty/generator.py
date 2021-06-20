@@ -20,7 +20,6 @@ class WheezyCaptcha(CaptchaGen):
     """Create an image CAPTCHA with wheezy.captcha."""
 
     def __init__(self, *, fonts: List[Union[PathLike, str]] = None):
-        super().__init__(fonts=fonts)
         self.fonts: List[Union[PathLike, str]] = fonts or DEFAULT_FONTS
 
     def generate(
@@ -73,7 +72,6 @@ class ImageCaptcha(CaptchaGen):
         fonts: Optional[List[Union[PathLike, str]]] = None,
         fonts_size: Optional[Tuple[int]] = None
     ):
-        super().__init__(fonts=fonts)
         self.fonts: List[Union[PathLike, str]] = fonts or DEFAULT_FONTS
         self.font_sizes: Tuple[int] = fonts_size or (50,)
         self.__truefonts: Tuple[PIL.ImageFont.FreeTypeFont] = self.fetch_truefonts(
