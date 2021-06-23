@@ -1,6 +1,7 @@
 from datetime import datetime
+from os import PathLike
 from io import BytesIO
-from typing import Optional, Union
+from typing import Optional, Union, List, Tuple
 
 # noinspection PyPackageRequirements
 import discord
@@ -24,7 +25,14 @@ class Captcha:
     This is the class that will create the captcha and his code if necessary.
     """
 
-    def __init__(self, captcha_type: TYPES, *, code: Optional[str] = None):
+    def __init__(
+        self,
+        captcha_type: TYPES,
+        *,
+        code: Optional[str] = None,
+        fonts: Optional[List[Union[PathLike, str]]] = None,
+        fonts_size: Optional[Tuple[int]] = None,
+    ):
         """
         Initializes class instance.
 
@@ -45,11 +53,16 @@ class Captcha:
         if captcha_type not in TYPES:
             raise KeyError("Given type %s is not available." % captcha_type)
         self.code: str = code or random_code()
+
+        # Get classe and initialize
         self.captcha: Union[WheezyCaptcha, ImageCaptcha, TextCaptcha] = TYPES[
             captcha_type
-        ]()
+        ](fonts=fonts, fonts_size=fonts_size)
 
-    async def generate_captcha(self) -> Union[BytesIO, str]:
+    def setup(self):
+        pass
+
+    def generate_captcha(self) -> Union[BytesIO, str]:
         """Generate the captcha image or text.
         In case the choosen captcha type is TextCaptcha, a string will be returned, otherwise
         it will be a BytesIO object.
@@ -69,9 +82,9 @@ class Captcha:
             out.seek(0)
             return out
 
-        return self.captcha.generate()
+        return self.captcha.generate(random_code())
 
-    async def generate_embed(
+    def generate_embed(
         self,
         guild_name: str,
         *,
@@ -84,7 +97,7 @@ class Captcha:
 
         If you're generating a captcha that is not a TextCaptcha, an image can be uploaded
         inside the captcha by sending an attachment with the captcha that is called
-        "captcha.png".
+        "captcha.png". Can be modified with ``image_url`` in kwargs.
 
         Parameters
         ----------
@@ -99,8 +112,7 @@ class Captcha:
             A mapping that can contain ``text`` and ``url`` as the key, they will be
             shown on the footer. (Bottom of the embed). Optional.
             ``text`` will be the text and ``url`` the icon's URL that will be shown.
-
-        kwargs:
+        **kwargs:
             Set given parameters as the content of the embed.
             The kwarg name can be either:
             - Setting the embed's color: ``colour`` or ``color``
@@ -159,7 +171,6 @@ class Captcha:
             url = author.get("url", discord.embeds.EmptyEmbed)
             embed.set_author(name=name, icon_url=url)
 
-        #
         if not isinstance(self.captcha, TextCaptcha):
             embed.set_image(url=kwargs.get("image_url", "attachment://captcha.png"))
 
