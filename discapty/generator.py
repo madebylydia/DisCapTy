@@ -85,7 +85,7 @@ class ImageCaptcha(CaptchaGen):
         self,
         *,
         fonts: Optional[List[Union[PathLike, str]]] = None,
-        fonts_size: Optional[Tuple[int]] = None,
+        fonts_sizes: Optional[Tuple[int]] = None,
     ):
         self.fonts: List[Union[PathLike, str]] = fonts or DEFAULT_FONTS
         self.font_sizes: Tuple[int] = fonts_size or (50,)
