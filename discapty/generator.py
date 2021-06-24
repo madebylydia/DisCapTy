@@ -248,9 +248,9 @@ class ImageCaptcha(CaptchaGen):
         number_of_curves: Optional[int]
             The number of curves to generate on the image
         """
-        background = background_color or (random_color(238, 255), 0)
+        background = background_color or random_color(238, 255, 0)
         color = text_color or random_color(10, 200)
-        if not all(validate_color(color) for color in (background_color, text_color)):
+        if not all(validate_color(color) for color in (background, color)):
             raise ValueError("Colors must be valid HEX code.")
         im = self.create_captcha_image(
             code_to_generate,

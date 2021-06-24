@@ -22,10 +22,12 @@ def random_color(start: int = 0, end: int = 255, opacity: int = 0):
     def color():
         return randint(start, end)
 
-    return "#%02X%02X%02X%02X" % (color(), color(), color(), 00)
+    return "#%02X%02X%02X%02X" % (color(), color(), color(), opacity)
 
 
 def validate_color(color: str) -> bool:
+    if not color:
+        return False
     try:
         getrgb(color)
     except ValueError:
