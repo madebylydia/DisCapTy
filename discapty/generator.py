@@ -26,7 +26,7 @@ class WheezyCaptcha(CaptchaGen):
         fonts_sizes: Tuple[int] = None,
     ):
         self.fonts: List[Union[PathLike, str]] = fonts or DEFAULT_FONTS
-        self.fonts_size: Tuple[int] = fonts_sizes or (50,)
+        self.fonts_sizes: Tuple[int] = fonts_sizes or (50,)
 
     def generate(
         self,
@@ -46,7 +46,7 @@ class WheezyCaptcha(CaptchaGen):
                 wheezy_captcha.background(background_color),
                 wheezy_captcha.text(
                     fonts=self.fonts,
-                    font_sizes=self.fonts_size,
+                    font_sizes=self.fonts_sizes,
                     drawings=[
                         wheezy_captcha.warp(),
                         wheezy_captcha.rotate(),
@@ -88,9 +88,9 @@ class ImageCaptcha(CaptchaGen):
         fonts_sizes: Optional[Tuple[int]] = None,
     ):
         self.fonts: List[Union[PathLike, str]] = fonts or DEFAULT_FONTS
-        self.font_sizes: Tuple[int] = fonts_size or (50,)
+        self.fonts_sizes: Tuple[int] = fonts_sizes or (50,)
         self.__truefonts: Tuple[PIL.ImageFont.FreeTypeFont] = self.fetch_truefonts(
-            self.fonts, self.font_sizes
+            self.fonts, self.fonts_sizes
         )
 
     def get_truefonts(self) -> Tuple[PIL.ImageFont.FreeTypeFont]:
@@ -98,9 +98,9 @@ class ImageCaptcha(CaptchaGen):
 
     @staticmethod
     def fetch_truefonts(
-        font: List[Union[PathLike, str]], font_sizes: Tuple[int]
+        font: List[Union[PathLike, str]], fonts_sizes: Tuple[int]
     ) -> Tuple[PIL.ImageFont.FreeTypeFont]:
-        return tuple(PIL.ImageFont.truetype(n, s) for n in font for s in font_sizes)
+        return tuple(PIL.ImageFont.truetype(n, s) for n in font for s in fonts_sizes)
 
     @staticmethod
     def create_noise_curve(image: PIL.Image, color: str, number: int = 1) -> PIL.Image:
