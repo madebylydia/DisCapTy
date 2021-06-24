@@ -31,7 +31,7 @@ class Captcha:
         *,
         code: Optional[str] = None,
         fonts: Optional[List[Union[PathLike, str]]] = None,
-        fonts_size: Optional[Tuple[int]] = None,
+        fonts_sizes: Optional[Tuple[int]] = None,
     ):
         """
         Initializes class instance.
@@ -57,7 +57,7 @@ class Captcha:
         # Get classe and initialize
         self.captcha: Union[WheezyCaptcha, ImageCaptcha, TextCaptcha] = TYPES[
             captcha_type
-        ](fonts=fonts, fonts_size=fonts_size)
+        ](fonts=fonts, fonts_sizes=fonts_sizes)
 
     def setup(self):
         pass
