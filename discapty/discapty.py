@@ -209,7 +209,7 @@ class Captcha:
         thumbnail = kwargs.get("thumbnail", discord.embeds.EmptyEmbed)
         if isinstance(self.captcha, TextCaptcha):
             description = Template(kwargs.get(
-                Template("description"), "Please return the code written on the Captcha: $code"
+                "description", "Please return the code written on the Captcha: $code"
             )).safe_substitute({"code": self.generate_captcha()})
         else:
             description = kwargs.get(
