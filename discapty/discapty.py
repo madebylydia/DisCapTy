@@ -2,6 +2,7 @@ from datetime import datetime
 from os import PathLike
 from io import BytesIO
 from typing import Optional, Union, List, Tuple
+from string import Template
 
 # noinspection PyPackageRequirements
 import discord
@@ -156,6 +157,7 @@ class Captcha:
         If you're generating a captcha that is not a TextCaptcha, an image can be uploaded
         inside the captcha by sending an attachment with the captcha that is called
         "captcha.png". Can be modified with ``image_url`` in kwargs.
+        The code is automatically added to the description when using TextCaptcha.
 
         Parameters
         ----------
@@ -175,11 +177,18 @@ class Captcha:
             The kwarg name can be either:
             - Setting the embed's color: ``colour`` or ``color``
             - Setting the embed's clickable URL on title: ``title_url``
-            - Setting the embed's title: ``title`` (Make guild_name parameter unuseful)
+            - Setting the embed's title: ``title`` (Overwrite guild_name parameter)
             - Setting the embed's description: ``description``
+            In case your captcha's type use text, you can put "$code" in your string and
+            it will automatically replaced by the captcha's code.
+            Example:
+            ```Please send me `$code`.```
+            will return the following description in the embed:
+            ```Please send me `FKLAC63`.```
+
             - Setting the embed's timestamp: ``timestamp``
             - Setting the embed's thumbnail: ``thumbnail``
-            - Setting the embed's image URL: ``image_url``. By default
+            - Setting the embed image's URL: ``image_url``. By default
             ``attachment://captcha.png``.
 
         Return
@@ -198,9 +207,14 @@ class Captcha:
         title_url = kwargs.get("title_url", discord.embeds.EmptyEmbed)
         timestamp = kwargs.get("timestamp", discord.embeds.EmptyEmbed)
         thumbnail = kwargs.get("thumbnail", discord.embeds.EmptyEmbed)
-        description = kwargs.get(
-            "description", "Please return the code written on the captcha."
-        )
+        if isinstance(self.captcha, TextCaptcha):
+            description = Template(kwargs.get(
+                Template("description"), "Please return the code written on the Captcha: $code"
+            )).safe_substitute({"code": self.generate_captcha()})
+        else:
+            description = kwargs.get(
+                "description", "Please return me the code written on the Captcha."
+            )
         contents = dict(title=title, type=_type, url=title_url, description=description)
 
         # Obtaining or creating embed.
