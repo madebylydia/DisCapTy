@@ -1,7 +1,7 @@
 from datetime import datetime
 from os import PathLike
 from io import BytesIO
-from typing import Optional, Union, List, Tuple
+from typing import Optional, Union, List, Tuple, NoReturn
 from string import Template
 
 # noinspection PyPackageRequirements
@@ -86,7 +86,7 @@ class Captcha:
             "noise_level": 2,
         }
 
-    def setup(self, **kwargs) -> bool:
+    def setup(self, **kwargs) -> NoReturn:
         """
         Set differents parameters for the captcha to generate.
 
@@ -103,21 +103,39 @@ class Captcha:
         height:
             The height of the image.
         background_color: str
-            A string of the HEX code to use for the background and effects. Support transparency.
+            A string of the HEX code to use for the background and effects. 
+            Support transparency.
         text_color: str
-            A string of the HEX code to use for the text. Support transparency.
+            A string of the HEX code to use for the text. 
+            Support transparency.
+
         number_of_dots: int
-            The number of dots to generate on the image if applicable. Defaults to 30.
+            The number of dots to generate on the image if applicable. 
+            Specific to image type. Defaults to 30.
         width_of_dots: int
-            The width of dots to generate on the image if applicable. Defaults to 3px.
+            The width of dots to generate on the image if applicable. 
+            Specific to image type. Defaults to 3px.
         number_of_curves: int
-            The number of curves to generate on the image if applicable. Defaults to 1.
+            The number of curves to generate on the image if applicable. 
+            Specific to image type. Defaults to 1.
+
+        text_squeeze_factor: float
+            How much space there is between characters. Specific to wheezy type. 
+            Defaults to 0.8.
+        noise_number: int
+            How much noise will be generated on the image. Specific to wheezy type.
+            Defaults to 30.
+        noise_color: str
+            The noise's color. Specific to wheezy type. 
+            Defaults to #EEEECC. Support transparency.
+        noise_level: int
+            How hard the noise will be. Specific to wheezy tupe. 
+            Defaults to 2.
         """
         can_be_setup = [setting for setting in self._settings]
         settings = [arg for arg in kwargs.items() if arg[0] in can_be_setup]
         for setting in settings:
             self._settings[setting[0]] = setting[1]
-        return True
 
 
     def generate_captcha(self) -> Union[BytesIO, str]:
