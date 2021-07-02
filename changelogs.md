@@ -5,12 +5,14 @@ Stable 1.0.0
 A more complete rewrite of the main library has been done, plus DisCapTy one too.
 They are not meant to make the code faster but more easy to read and understand, and developer friendly.
 
-* ``PlainCaptcha`` has been renamed into ``TextCaptcha``
+* ``PlainCaptcha`` has been renamed into ``TextCaptcha`` and his type has been renamed from ``plain`` to ``text``.
 * Fully added typehinting to the base library and DisCapTy, making more easy to pass your own functions directly to the generator.
 * ``discapty.Captcha.generate_embed`` now return a ``discord.Embed`` object only instead of a dict with the embed and the captcha.
 * ``discapty.Captcha.verify_code`` will now check case. To revert that change, use the ``ignore_case`` argument.
+* The original error ``discapty.SameCodeError`` has been renamed to ``discapty.CopyPasteError`` for more transparency.
+* Every functions doesn't use async/await anymore. You need to remove all awaitable calls.
 * You can now customize the embed's image URL when generating embed.
-* Width and height are defined when generating captcha, not when initializing class.
+* ``discapty.Captcha.setup`` is now used to set advanced settings for captcha.
 
 Beta 0.4
 ========

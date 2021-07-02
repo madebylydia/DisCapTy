@@ -10,7 +10,7 @@ import PIL
 from wheezy.captcha import image as wheezy_captcha
 
 from .typehint import CaptchaGen
-from .utils import ESCAPE_CHAR, table, random_color, validate_color
+from .utils import ESCAPE_CHAR, table, random_color, validate_color, ensure_valid
 
 path = join(abspath(dirname(__file__)), "fonts")
 DEFAULT_FONTS = [join(path, f) for f in listdir(path) if isfile(join(path, f))]
@@ -25,21 +25,22 @@ class WheezyCaptcha(CaptchaGen):
         fonts: List[Union[PathLike, str]] = None,
         fonts_sizes: Tuple[int] = None,
     ):
-        self.fonts: List[Union[PathLike, str]] = fonts or DEFAULT_FONTS
+        self.fonts: List[Union[PathLike, str]] = ensure_valid(fonts) if fonts else DEFAULT_FONTS
         self.fonts_sizes: Tuple[int] = fonts_sizes or (50,)
 
     def generate(
         self,
         chars: str,
         *,
-        background_color: Optional[str] = "#EEEECC",
-        text_color: Optional[str] = "#5C87B2",
-        text_squeeze_factor: Optional[float] = 0.8,
-        noise_number: Optional[int] = 30,
-        noise_color: Optional[str] = "#EEEECC",
-        noise_level: Optional[int] = 2,
-        width: Optional[int] = 300,
-        height: Optional[int] = 125,
+        width: int = 300,
+        height: int = 125,
+        background_color: str = "#EEEECC",
+        text_color: str = "#5C87B2",
+        text_squeeze_factor: float = 0.8,
+        noise_number: int = 30,
+        noise_color: str = "#EEEECC",
+        noise_level: int = 2,
+        **kwargs
     ):
         fn: PIL.Image = wheezy_captcha.captcha(
             drawings=[
@@ -94,7 +95,11 @@ class ImageCaptcha(CaptchaGen):
         )
 
     def get_truefonts(self) -> Tuple[PIL.ImageFont.FreeTypeFont]:
-        return self.__truefonts
+        if fonts := self.__truefonts:
+            return fonts
+        # There's no reason it happens but who know?
+        return self.fetch_truefonts(DEFAULT_FONTS)
+
 
     @staticmethod
     def fetch_truefonts(
@@ -218,13 +223,14 @@ class ImageCaptcha(CaptchaGen):
         self,
         code_to_generate: str,
         *,
-        width: Optional[int] = 300,
-        height: Optional[int] = 125,
+        width: int = 300,
+        height: int = 125,
         background_color: Optional[str] = None,
         text_color: Optional[str] = None,
-        number_of_dots: Optional[int] = 30,
-        width_of_dots: Optional[int] = 3,
-        number_of_curves: Optional[int] = 1,
+        number_of_dots: int = 30,
+        width_of_dots: int = 3,
+        number_of_curves: int = 1,
+        **kwargs
     ):
         """Generate the image of the given characters.
 
@@ -232,24 +238,24 @@ class ImageCaptcha(CaptchaGen):
         ----------
         code_to_generate: str
             The captcha's code.
-        width: Optional[int]
+        width: int
             The width of the captcha image.
-        height: Optional[int]
+        height: int
             The height of the captcha image.
-        background_color: Optional[Tuple[str, int]]
+        background_color: Optional[str]
             A string of a valid HTML hex color. Support transparency.
         text_color: Optional[str]
             A string of a valid HTML hex color. Support transparency.
             Also applied to dots and curves.
-        number_of_dots: Optional[int]
+        number_of_dots: int
             The number of dots to generate on the image. Default to 30.
-        width_of_dots: Optional[int]
+        width_of_dots: int
             The width of the dots to generate on the image. Default to 3.
-        number_of_curves: Optional[int]
+        number_of_curves: int
             The number of curves to generate on the image
         """
-        background = background_color or random_color(238, 255, 0)
-        color = text_color or random_color(10, 200)
+        background = background_color or random_color(238, 255)
+        color = text_color or random_color(10, 200, 100)
         if not all(validate_color(color) for color in (background, color)):
             raise ValueError("Colors must be valid HEX code.")
         im = self.create_captcha_image(

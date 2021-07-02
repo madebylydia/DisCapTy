@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from io import BytesIO
-from os import PathLike
-from typing import List, Literal, Optional, TypedDict, Union
+from typing import Literal, Optional, TypedDict, Union
 
 import discord
 
@@ -52,8 +51,6 @@ class CaptchaGen(ABC):
     def generate(
         self,
         code_to_generate: str,
-        *,
-        width: Optional[int],
-        height: Optional[int],
+        **kwargs
     ) -> Union[BytesIO, str]:
         raise NotImplementedError()

@@ -1,7 +1,10 @@
 from random import SystemRandom, randint
 from string import ascii_uppercase, digits
+from typing import List, Union
+from os import PathLike
 
 from PIL.ImageColor import getrgb
+from PIL.ImageFont import truetype
 
 ESCAPE_CHAR = "\u200B"
 table = [i * 1.97 for i in range(256)]
@@ -33,3 +36,12 @@ def validate_color(color: str) -> bool:
     except ValueError:
         return False
     return True
+
+def ensure_valid(
+    fonts: List[Union[PathLike, str]]
+) -> List[Union[PathLike, str]]:
+    """
+    A "stupid" checker for fonts. DO NOT USE THIS FUNCTION YOURSELF!
+    """
+    [truetype(n, 50) for n in fonts]
+    return fonts

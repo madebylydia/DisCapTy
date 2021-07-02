@@ -44,11 +44,18 @@ class Captcha:
         code: str
             The code you wish to use with the captcha. Optional. If none is given,
             a random code is generated.
+        fonts: Optional[List[Union[PathLike, str]]]
+            A list of path to custom fonts.
+        fonts_sizes: Optional[Tuple[int]]
+            A tuple of font's size. When generating a letter/number on the image, a random
+            number will be taken in this tuple.
 
         Raises
         ------
         KeyError:
             The given captcha type is not available in DisCapTy.
+        OSError:
+            The fonts cannot be opened. most probably due to an incorrect path.
         """
         if captcha_type not in TYPES:
             raise KeyError("Given type %s is not available." % captcha_type)
@@ -59,22 +66,73 @@ class Captcha:
             captcha_type
         ](fonts=fonts, fonts_sizes=fonts_sizes)
 
-    def setup(self):
-        pass
+        self._settings: dict = {
+            # General
+            "width": 300,
+            "height": 125,
+            "background_color": "#EEEECC",
+            "text_color": "#5C87B2",
+
+            # image specific
+            "number_of_dots": 30,
+            "width_of_dots": 3,
+            "number_of_curves": 1,
+
+            # wheezy specific
+            "text_squeeze_factor": 0.8,
+            "noise_number": 30,
+            "noise_color": "#EEEECC",
+            "noise_level": 2,
+        }
+
+    def setup(self, **kwargs) -> bool:
+        """
+        Set differents parameters for the captcha to generate.
+
+        Parameters number_of_dots, width_of_dots and number_of_curves are specific to image type.
+        Parameters text_squeeze_factor, noise_number, noise_color, noise_level are specific to
+        wheezy type.
+        Any of this parameters will be applied to the text type.
+        Unknown parameters will be ignored.
+
+        Parameters
+        ----------
+        width: int
+            The width of the image.
+        height:
+            The height of the image.
+        background_color: str
+            A string of the HEX code to use for the background and effects. Support transparency.
+        text_color: str
+            A string of the HEX code to use for the text. Support transparency.
+        number_of_dots: int
+            The number of dots to generate on the image if applicable. Defaults to 30.
+        width_of_dots: int
+            The width of dots to generate on the image if applicable. Defaults to 3px.
+        number_of_curves: int
+            The number of curves to generate on the image if applicable. Defaults to 1.
+        """
+        can_be_setup = [setting for setting in self._settings]
+        settings = [arg for arg in kwargs.items() if arg[0] in can_be_setup]
+        for setting in settings:
+            self._settings[setting[0]] = setting[1]
+        return True
+
 
     def generate_captcha(self) -> Union[BytesIO, str]:
         """Generate the captcha image or text.
-        In case the choosen captcha type is TextCaptcha, a string will be returned, otherwise
+        In case the choosen captcha type is text, a string will be returned, otherwise
         it will be a BytesIO object.
 
         Returns
         -------
-        io.BytesIO: The image. Can be used as a file to send. If the captcha type is text, a
-            string will be returned instead.
+        Union[io.BytesIO, str]
+            The captcha object. It is a string if the type is text, otherwise it is a png
+            image put into a BytesIO object.
         """
 
         if not isinstance(self.captcha, TextCaptcha):
-            image: Image = self.captcha.generate(self.code)
+            image: Image = self.captcha.generate(self.code, **self._settings)
             out = BytesIO()
             # Typehint think it's Union[BytesIO, str] which trigger PyLint
             # noinspection PyUnresolvedReferences
@@ -82,11 +140,11 @@ class Captcha:
             out.seek(0)
             return out
 
-        return self.captcha.generate(random_code())
+        return self.captcha.generate(self.code)
 
     def generate_embed(
         self,
-        guild_name: str,
+        guild_name: Optional[str] = None,
         *,
         author: Optional[Author] = None,
         footer: Optional[Footer] = None,
@@ -135,7 +193,7 @@ class Captcha:
 
         # Get everything we need from kwargs.
         colour = kwargs.get("colour") or kwargs.get("color")
-        title = kwargs.get("title", f"{guild_name} Captcha Verification")
+        title = kwargs.get("title", f"{guild_name} Captcha Verification" if guild_name else "Captcha Verification")
         _type = kwargs.get("type", "rich")
         title_url = kwargs.get("title_url", discord.embeds.EmptyEmbed)
         timestamp = kwargs.get("timestamp", discord.embeds.EmptyEmbed)
@@ -189,7 +247,7 @@ class Captcha:
 
         Raises
         ------
-        CopyPasteError:
+        discapty.CopyPasteError:
             If the code is the same as what was generated when generating the captcha code of
             PlainCaptcha.
 
