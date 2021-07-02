@@ -48,9 +48,5 @@ class Captcha(ABC):
 
 class CaptchaGen(ABC):
     @abstractmethod
-    def generate(
-        self,
-        code_to_generate: str,
-        **kwargs
-    ) -> Union[BytesIO, str]:
+    def generate(self, code_to_generate: str, **kwargs) -> Union[BytesIO, str]:
         raise NotImplementedError()

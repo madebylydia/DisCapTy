@@ -73,12 +73,10 @@ class Captcha:
             "height": 125,
             "background_color": "#EEEECC",
             "text_color": "#5C87B2",
-
             # image specific
             "number_of_dots": 30,
             "width_of_dots": 3,
             "number_of_curves": 1,
-
             # wheezy specific
             "text_squeeze_factor": 0.8,
             "noise_number": 30,
@@ -90,6 +88,7 @@ class Captcha:
         """
         Set differents parameters for the captcha to generate.
 
+        Parameters width, height, background_color and text_color are applied to any types.
         Parameters number_of_dots, width_of_dots and number_of_curves are specific to image type.
         Parameters text_squeeze_factor, noise_number, noise_color, noise_level are specific to
         wheezy type.
@@ -103,40 +102,39 @@ class Captcha:
         height:
             The height of the image.
         background_color: str
-            A string of the HEX code to use for the background and effects. 
+            A string of the HEX code to use for the background and effects.
             Support transparency.
         text_color: str
-            A string of the HEX code to use for the text. 
+            A string of the HEX code to use for the text.
             Support transparency.
 
         number_of_dots: int
-            The number of dots to generate on the image if applicable. 
+            The number of dots to generate on the image if applicable.
             Specific to image type. Defaults to 30.
         width_of_dots: int
-            The width of dots to generate on the image if applicable. 
+            The width of dots to generate on the image if applicable.
             Specific to image type. Defaults to 3px.
         number_of_curves: int
-            The number of curves to generate on the image if applicable. 
+            The number of curves to generate on the image if applicable.
             Specific to image type. Defaults to 1.
 
         text_squeeze_factor: float
-            How much space there is between characters. Specific to wheezy type. 
+            How much space there is between characters. Specific to wheezy type.
             Defaults to 0.8.
         noise_number: int
             How much noise will be generated on the image. Specific to wheezy type.
             Defaults to 30.
         noise_color: str
-            The noise's color. Specific to wheezy type. 
+            The noise's color. Specific to wheezy type.
             Defaults to #EEEECC. Support transparency.
         noise_level: int
-            How hard the noise will be. Specific to wheezy tupe. 
+            How hard the noise will be. Specific to wheezy tupe.
             Defaults to 2.
         """
         can_be_setup = [setting for setting in self._settings]
         settings = [arg for arg in kwargs.items() if arg[0] in can_be_setup]
         for setting in settings:
             self._settings[setting[0]] = setting[1]
-
 
     def generate_captcha(self) -> Union[BytesIO, str]:
         """Generate the captcha image or text.
@@ -220,15 +218,23 @@ class Captcha:
 
         # Get everything we need from kwargs.
         colour = kwargs.get("colour") or kwargs.get("color")
-        title = kwargs.get("title", f"{guild_name} Captcha Verification" if guild_name else "Captcha Verification")
+        title = kwargs.get(
+            "title",
+            f"{guild_name} Captcha Verification"
+            if guild_name
+            else "Captcha Verification",
+        )
         _type = kwargs.get("type", "rich")
         title_url = kwargs.get("title_url", discord.embeds.EmptyEmbed)
         timestamp = kwargs.get("timestamp", discord.embeds.EmptyEmbed)
         thumbnail = kwargs.get("thumbnail", discord.embeds.EmptyEmbed)
         if isinstance(self.captcha, TextCaptcha):
-            description = Template(kwargs.get(
-                "description", "Please return the code written on the Captcha: $code"
-            )).safe_substitute({"code": self.generate_captcha()})
+            description = Template(
+                kwargs.get(
+                    "description",
+                    "Please return the code written on the Captcha: $code",
+                )
+            ).safe_substitute({"code": self.generate_captcha()})
         else:
             description = kwargs.get(
                 "description", "Please return me the code written on the Captcha."

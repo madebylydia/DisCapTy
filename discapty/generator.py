@@ -25,7 +25,9 @@ class WheezyCaptcha(CaptchaGen):
         fonts: List[Union[PathLike, str]] = None,
         fonts_sizes: Tuple[int] = None,
     ):
-        self.fonts: List[Union[PathLike, str]] = ensure_valid(fonts) if fonts else DEFAULT_FONTS
+        self.fonts: List[Union[PathLike, str]] = (
+            ensure_valid(fonts) if fonts else DEFAULT_FONTS
+        )
         self.fonts_sizes: Tuple[int] = fonts_sizes or (50,)
 
     def generate(
@@ -40,7 +42,7 @@ class WheezyCaptcha(CaptchaGen):
         noise_number: int = 30,
         noise_color: str = "#EEEECC",
         noise_level: int = 2,
-        **kwargs
+        **kwargs,
     ):
         fn: PIL.Image = wheezy_captcha.captcha(
             drawings=[
@@ -99,7 +101,6 @@ class ImageCaptcha(CaptchaGen):
             return fonts
         # There's no reason it happens but who know?
         return self.fetch_truefonts(DEFAULT_FONTS)
-
 
     @staticmethod
     def fetch_truefonts(
@@ -230,7 +231,7 @@ class ImageCaptcha(CaptchaGen):
         number_of_dots: int = 30,
         width_of_dots: int = 3,
         number_of_curves: int = 1,
-        **kwargs
+        **kwargs,
     ):
         """Generate the image of the given characters.
 
