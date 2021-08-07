@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    if: github.repository == 'Predeactor/discapty'
+    if: github.repository == 'Predeactor/DisCapTy'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
