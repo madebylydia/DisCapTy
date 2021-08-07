@@ -20,6 +20,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-This project took advantage of https://github.com/lepture/captcha as the most
-important function of this library. Copy of the license of the original code
-can be found at https://github.com/lepture/captcha/blob/e0f370f22fd571feca43ae43f97dd7206939de4b/LICENSE
+This project use https://github.com/lepture/captcha for the major part of this module.
+Full license available at:
+https://github.com/lepture/captcha/blob/e0f370f22fd571feca43ae43f97dd7206939de4b/LICENSE
+
+This project use the Roboto font which is licensied under Apache-2.0. Full license
+available at: https://www.apache.org/licenses/LICENSE-2.0.
