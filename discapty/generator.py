@@ -10,7 +10,7 @@ import PIL
 from wheezy.captcha import image as wheezy_captcha
 
 from .typehint import CaptchaGen
-from .utils import ESCAPE_CHAR, table, random_color, validate_color, ensure_valid
+from .utils import ESCAPE_CHAR, table, random_color, validate_color, _ensure_valid
 
 path = join(abspath(dirname(__file__)), "fonts")
 DEFAULT_FONTS = [join(path, f) for f in listdir(path) if isfile(join(path, f))]
@@ -26,7 +26,7 @@ class WheezyCaptcha(CaptchaGen):
         fonts_sizes: Tuple[int] = None,
     ):
         self.fonts: List[Union[PathLike, str]] = (
-            ensure_valid(fonts) if fonts else DEFAULT_FONTS
+            _ensure_valid(fonts) if fonts else DEFAULT_FONTS
         )
         self.fonts_sizes: Tuple[int] = fonts_sizes or (50,)
 

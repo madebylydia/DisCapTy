@@ -8,16 +8,19 @@ AVAILABLE_CAPTCHA_TYPES = Literal["image", "wheezy", "text"]
 
 
 class Author(TypedDict):
-    name: str
-    url: str
+    name: Optional[str]
+    url: Optional[str]
 
 
 class Footer(TypedDict):
-    text: str
-    url: str
+    text: Optional[str]
+    url: Optional[str]
 
 
 class Captcha(ABC):
+    code: str
+    type: AVAILABLE_CAPTCHA_TYPES
+
     def __init__(self) -> None:
         self.code: str
         self.type: AVAILABLE_CAPTCHA_TYPES

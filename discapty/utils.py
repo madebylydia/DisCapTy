@@ -38,7 +38,7 @@ def validate_color(color: str) -> bool:
     return True
 
 
-def ensure_valid(fonts: List[Union[PathLike, str]]) -> List[Union[PathLike, str]]:
+def _ensure_valid(fonts: List[Union[PathLike, str]]) -> List[Union[PathLike, str]]:
     """
     A "stupid" checker for fonts. DO NOT USE THIS FUNCTION YOURSELF!
     """

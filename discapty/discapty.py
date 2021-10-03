@@ -31,6 +31,7 @@ class Captcha:
         captcha_type: TYPES,
         *,
         code: Optional[str] = None,
+        code_length: Optional[int] = 8,
         fonts: Optional[List[Union[PathLike, str]]] = None,
         fonts_sizes: Optional[Tuple[int]] = None,
     ):
@@ -60,9 +61,9 @@ class Captcha:
         """
         if captcha_type not in TYPES:
             raise KeyError("Given type %s is not available." % captcha_type)
-        self.code: str = code or random_code()
+        self.code: str = code or random_code(code_length)
 
-        # Get classe and initialize
+        # Get class and initialize
         self.captcha: Union[WheezyCaptcha, ImageCaptcha, TextCaptcha] = TYPES[
             captcha_type
         ](fonts=fonts, fonts_sizes=fonts_sizes)
