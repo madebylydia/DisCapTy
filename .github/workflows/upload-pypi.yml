@@ -12,10 +12,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: ./.github/workflows/run-test.yml
-    - name: Show Poetry
+
+    - name: Run tests
+      uses: ./.github/workflows/tests.yml
+
+    - name: Is Poetry installed?
       run: poetry --help
 
 
     - name: Build and publish
-      run: poetry publish --build --username "__token__" --password "${{ secrets.PYPI_API_TOKEN }}"
+      run: echo "Publishing to PyPi logic."
