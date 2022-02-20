@@ -1,0 +1,21 @@
+name: Publish to PyPI
+on:
+  workflow_dispatch:
+  push:
+    tags:
+     - "*"
+
+jobs:
+  deploy:
+    # if: github.repository == 'Predeactor/DisCapTy'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/workflows/run-test.yml
+    - name: Show Poetry
+      run: poetry --help
+
+
+    - name: Build and publish
+      run: poetry publish --build --username "__token__" --password "${{ secrets.PYPI_API_TOKEN }}"

@@ -1,3 +1,13 @@
+Stable 2.0.0
+============
+
+**This release present breaking changes. You're advised to read this changelog to know what to do in order to update
+your code.**
+
+* A documentation has been put in place for better understanding of the library.
+* Code has been fully rewritten.
+* You can now create your own generator.
+
 Stable 1.0.2
 ============
 This is a hotfix release, fixing typehinting & adding a much easier way to choose the Captcha's code length.

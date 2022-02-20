@@ -1,25 +1,30 @@
 # DisCaPty
 
-DisCaPty is a Python module to generate Captcha challenge more easily and with more flexibility. Principally made for Discord bot developers but available for everyone!
+![DisCapTy's Logo](.github/discapty.png)
+
+DisCaPty is a Python module to generate Captcha images without struggling your mind on how to make your own. Everyone can use it!
+
+**Documentation:** https://discapty.readthedocs.io
 
 ![PyPI](https://img.shields.io/pypi/v/discapty)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/discapty)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/discapty?color=blue)
+[![Documentation Status](https://readthedocs.org/projects/discapty/badge/?version=latest)](https://discapty.readthedocs.io/en/latest/?badge=latest)
 
 # Installing
 
 DisCaPty is available on PyPi!
 
 ```sh
-python -m pip install -U discapty
+pip3 install discapty
 ```
+You require a version higher 
 
-You can also clone the module using git:
+# Clone & Test the project
 
-```sh
-python -m pip install -U git+https://github.com/Predeactor/DisCapTy
-```
-It is still recommended to use PyPi.
+This project is dependant of [Poetry](), a dependency managemer tool. You are most likely going to require this tool to correctly interact with the project, check out [Poetry's documentation](https://python-poetry.org/docs) for how to install it.
+
+After then, clone the repository & run `poetry install`
 
 # Creating Captcha
 
@@ -82,4 +87,6 @@ def generate_captcha():
 You can join my Discord server for any help: https://discord.gg/aPVupKAxxP
 
 DisCapTy is licensied under MIT: ![PyPI - License](https://img.shields.io/pypi/l/discapty)
-DisCapTy use the Roboto font as default font. This font is licensied under [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+DisCapTy use the Roboto font as default font.
+This font is licensied under [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).

@@ -1,0 +1,25 @@
+name: Run tests
+on:
+  pull_request:
+  push:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python & Poetry
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: '1.1.13'
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run tests
+        run: python -m unittest tests/test_discapty.py

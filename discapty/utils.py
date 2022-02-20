@@ -1,46 +1,24 @@
-from random import SystemRandom, randint
-from string import ascii_uppercase, digits
-from typing import List, Union
-from os import PathLike
-
-from PIL.ImageColor import getrgb
 from PIL.ImageFont import truetype
-
-ESCAPE_CHAR = "\u200B"
-table = [i * 1.97 for i in range(256)]
-
-
-def random_code(length: int = 8):
-    return "".join(
-        SystemRandom().choice(ascii_uppercase + digits) for _ in range(length)
-    )
+from typing import List, Optional, Union
+from pathlib import Path
 
 
-def random_color(start: int = 0, end: int = 255, opacity: int = 0):
-    if not all([0 <= attribute <= 255 for attribute in (start, end, opacity)]):
-        raise ValueError(
-            "start, end and opacity parameters must be contained between 0 and 255."
-        )
+def check_fonts(*fonts: Union[str, Path]) -> Optional[List[str]]:
+    """Check the given fonts by loading them. If any of them fails, return their path.
 
-    def color():
-        return randint(start, end)
-
-    return "#%02X%02X%02X%02X" % (color(), color(), color(), opacity)
-
-
-def validate_color(color: str) -> bool:
-    if not color:
-        return False
-    try:
-        getrgb(color)
-    except ValueError:
-        return False
-    return True
-
-
-def _ensure_valid(fonts: List[Union[PathLike, str]]) -> List[Union[PathLike, str]]:
+    Returns
+    -------
+    List[str] - Optional
+        A list of path of the non-loadable font, if any.
     """
-    A "stupid" checker for fonts. DO NOT USE THIS FUNCTION YOURSELF!
-    """
-    [truetype(n, 50) for n in fonts]
-    return fonts
+    failures: List[str] = []
+    for font in fonts:
+        if isinstance(font, Path):
+            font = font.absolute().as_posix()
+        try:
+            truetype(font)
+        except OSError:
+            failures.append(font)
+    if failures:
+        return failures
+    # NoReturn
