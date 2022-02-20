@@ -22,4 +22,4 @@ jobs:
         run: poetry install
 
       - name: Run tests
-        run: python -m unittest tests/test_discapty.py
+        run: poetry run python -m unittest tests/test_discapty.py
