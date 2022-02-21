@@ -9,7 +9,6 @@ jobs:
   pre-release:
     name: Review this part before approval
     runs-on: ubuntu-latest
-    needs: test
 
     steps:
     - uses: actions/checkout@v2
