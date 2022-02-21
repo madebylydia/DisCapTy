@@ -6,16 +6,41 @@ on:
      - "*"
 
 jobs:
-  deploy:
-    # if: github.repository == 'Predeactor/DisCapTy'
+  test:
+    name: Run tests
+    uses: ./.github/workflows/tests.yml
+
+  pre-release:
+    name: Review this part before approval
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: ./.github/workflows/run-test.yml
-    - name: Show Poetry
-      run: poetry --help
+    - name: Run script
+      shell: python
+      run: ./.github/scripts/pre_release.py
 
+  deploy:
+    # if: github.repository == 'Predeactor/DisCapTy'
+    runs-on: ubuntu-latest
+    environment: release
+    name: Deploy DisCapTy to PyPi.
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: Set up Poetry
+      uses: abatilo/actions-poetry@v2.0.0
+      with:
+          poetry-version: '1.1.13'
+
+    - name: Install dependencies
+      run: poetry install
 
     - name: Build and publish
-      run: poetry publish --build --username "__token__" --password "${{ secrets.PYPI_API_TOKEN }}"
+      run: poetry debug
+      # run: poetry publish --build --username "__token__" --password "${{ secrets.PYPI_API_TOKEN }}"
