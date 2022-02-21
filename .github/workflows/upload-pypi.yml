@@ -1,24 +1,15 @@
 name: Publish to PyPI
 on:
-  workflow_dispatch:
   push:
     tags:
-     - "*"
+    - "*"
 
 jobs:
+
   test:
     name: Run tests
     uses: ./.github/workflows/tests.yml
 
-  pre-release:
-    name: Review this part before approval
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-    - name: Run script
-      shell: python
-      run: ./.github/scripts/pre_release.py
 
   deploy:
     # if: github.repository == 'Predeactor/DisCapTy'
