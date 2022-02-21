@@ -13,6 +13,7 @@ jobs:
   pre-release:
     name: Review this part before approval
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
     - name: Run script
@@ -24,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
     name: Deploy DisCapTy to PyPi.
-    needs: test
+    needs: pre-release
 
     steps:
     - uses: actions/checkout@v2
