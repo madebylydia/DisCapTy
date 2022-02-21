@@ -6,7 +6,16 @@ class ChallengeOptions(TypedDict):
 
 class Challenge:
     """
-    Representation of a challenge. A challenge is a class who's job is to 
+    Representation of a challenge. A challenge represent the user's Captcha challenge he must
+    face.
+    
+    This class takes cares of:
+        - Generating the captcha
+        - Verify inputs
+        - Manage the "Captcha" object
+    
+    It free your mind from managing all the process of a captcha challenge, keeping your code
+    short and easy.
     """
 
     def __init__(self, **kwargs: Union[str, int]) -> None:

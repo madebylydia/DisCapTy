@@ -11,6 +11,9 @@ jobs:
     name: Run tests
     uses: ./.github/workflows/tests.yml
 
+  pre-release:
+    name: Prepare release
+    uses: ./.github/workflows/prepare-release.yml
 
   deploy:
     # if: github.repository == 'Predeactor/DisCapTy'
