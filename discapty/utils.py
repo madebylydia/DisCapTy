@@ -7,7 +7,7 @@ from PIL.ImageColor import getrgb
 from PIL.ImageFont import truetype
 
 ESCAPE_CHAR = "\u200B"
-table = [i * 1.97 for i in range(256)]
+table = [int(i * 1.97) for i in range(256)]
 
 
 def random_code(length: int = 8):
