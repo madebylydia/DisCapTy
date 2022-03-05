@@ -23,5 +23,8 @@ jobs:
         path: ~/.local
         key: dotlocal-${{ runner.os }}-${{ hashFiles('.github/workflows/tests.yml') }}
 
+    - name: install discapty?
+      run: poetry install
+
     - name: Run script
       run: python ./.github/scripts/pre_release.py
