@@ -20,7 +20,9 @@ jobs:
     - name: Load cached $HOME/.local
       uses: actions/cache@v2.1.6
       with:
-        path: ~/.local
+        path: |
+          ~/.local
+          ~/.poetry
         key: dotlocal-${{ runner.os }}-${{ hashFiles('.github/workflows/tests.yml') }}
 
     - name: install discapty?
