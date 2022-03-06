@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .local
-          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/pyproject.toml') }}
 
       # Install & configure Poetry
       - name: Install Poetry
@@ -49,9 +49,6 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
-      - name: Enter venv
-        run: source $VENV
-
       # Install all dependencies required by DisCapTy
       - name: Install external dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
@@ -63,4 +60,4 @@ jobs:
 
       # Run DisCapTy's tests
       - name: Run tests
-        run: python -m unittest tests/test_discapty.py
+        run: poetry run python -m unittest tests/test_discapty.py
