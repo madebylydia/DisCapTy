@@ -37,8 +37,8 @@ jobs:
       id: cached-poetry
       uses: actions/cache@v2
       with:
-        path: .local
-        key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock', '**/pyproject.toml') }}
+        path: ~/.local
+        key: poetry-0
 
     # Install & configure Poetry
     - name: Install Poetry
