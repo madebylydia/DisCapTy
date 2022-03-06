@@ -51,7 +51,7 @@ jobs:
 
     # Install requests manually
     - name: Install requests
-      run: pip install requests
+      run: poetry add requests
 
     # Run the main script
     - name: Run script
