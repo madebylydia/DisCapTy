@@ -49,6 +49,10 @@ jobs:
     - name: Install DisCapTy
       run: poetry install -n
 
+    # Install requests manually
+    - name: Install requests
+      run: pip install requests
+
     # Run the main script
     - name: Run script
       run: poetry run python ./.github/scripts/pre_release.py
