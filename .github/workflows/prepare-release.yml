@@ -40,9 +40,6 @@ jobs:
         path: .venv
         key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
-    - name: Enter venv
-      run: source $VENV
-
     # Install all dependencies required by DisCapTy
     - name: Install external dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
@@ -54,4 +51,4 @@ jobs:
 
     # Run the main script
     - name: Run script
-      run: python ./.github/scripts/pre_release.py
+      run: poetry run python ./.github/scripts/pre_release.py
