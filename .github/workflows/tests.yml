@@ -25,8 +25,17 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      # Load the cached installation of Poetry
+      - name: Load cached Poetry installation
+        id: cached-poetry
+        uses: actions/cache@v2
+        with:
+          path: .local
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
       # Install & configure Poetry
       - name: Install Poetry
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
@@ -40,6 +49,9 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
+      - name: Enter venv
+        run: source $VENV
+
       # Install all dependencies required by DisCapTy
       - name: Install external dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
@@ -51,4 +63,4 @@ jobs:
 
       # Run DisCapTy's tests
       - name: Run tests
-        run: poetry run python -m unittest tests/test_discapty.py
+        run: python -m unittest tests/test_discapty.py
