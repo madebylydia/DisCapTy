@@ -1,0 +1,58 @@
+# Preparing release consist of:
+# - Check version of package, if it respect semantic ver.
+
+name: Prepare Release
+on:
+  workflow_call:
+
+jobs:
+  pre-release:
+    name: Review this part before approval
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    # Load the cached installation of Poetry
+    - name: Load cached Poetry installation
+      id: cached-poetry
+      uses: actions/cache@v2
+      with:
+        path: ~/.local
+        key: poetry-0
+
+    # Install & configure Poetry
+    - name: Install Poetry
+      if: steps.cached-poetry.outputs.cache-hit != 'true'
+      uses: snok/install-poetry@v1
+      with:
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    # Load cached venv
+    - name: Load cached venv
+      id: cached-poetry-dependencies
+      uses: actions/cache@v2
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+    # Install all dependencies required by DisCapTy
+    - name: Install external dependencies
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      run: poetry install -n --no-root
+
+    # Install DisCapTy itself
+    - name: Install DisCapTy
+      run: poetry install -n
+
+    # Install requests manually
+    - name: Install requests
+      run: poetry add requests
+
+    # Run the main script
+    - name: Run script
+      run: poetry run python ./.github/scripts/pre_release.py

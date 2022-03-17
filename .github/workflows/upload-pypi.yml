@@ -1,0 +1,65 @@
+name: Publish to PyPI
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - "*"
+
+jobs:
+
+  test:
+    name: Run tests
+    uses: ./.github/workflows/tests.yml
+
+  pre-release:
+    name: Prepare release
+    needs: test
+    uses: ./.github/workflows/prepare-release.yml
+
+  deploy:
+    # if: github.repository == 'Predeactor/DisCapTy'
+    runs-on: ubuntu-latest
+    environment: release
+    name: Deploy DisCapTy to PyPi.
+    needs: pre-release
+
+    steps:
+    - uses: actions/checkout@v2
+
+    # Install Python
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+
+    # Load the cached installation of Poetry
+    - name: Load cached Poetry installation
+      id: cached-poetry
+      uses: actions/cache@v2
+      with:
+        path: ~/.local
+        key: poetry-0
+
+    # Install & configure Poetry
+    - name: Install Poetry
+      if: steps.cached-poetry.outputs.cache-hit != 'true'
+      uses: snok/install-poetry@v1
+      with:
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    # Load cached venv
+    - name: Load cached venv
+      id: cached-poetry-dependencies
+      uses: actions/cache@v2
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+    # Install external dependencies & DisCapTy
+    - name: Install dependencies
+      run: poetry install -n
+
+    - name: Build and publish
+      run: poetry debug
+      # run: poetry publish --build --username "__token__" --password "${{ secrets.PYPI_API_TOKEN }}"
