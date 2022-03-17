@@ -30,6 +30,8 @@ class CaptchaGenerator(metaclass=ABCMeta):
         DisCapTy already include 3 differents generator: Wheezy, Image and Text. Check
         them out before rewritting the wheel!
     """
+    def __init__(self) -> None:
+        self.name: str
 
     def __init__(self) -> None:
         self._fonts: List[Path] = []
