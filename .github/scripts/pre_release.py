@@ -30,7 +30,7 @@ def check_pypi_version(local_version: str):
 
 def check_local_version_against_pyproject(discapty_version: str):
     pyproject_file = os.path.abspath(
-        os.path.join(__file__, "..", "..", "pyproject.toml")
+        os.path.join(__file__, "..", "..", "..", "pyproject.toml")
     )
 
     with open(pyproject_file, "r") as f:
