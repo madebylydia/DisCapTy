@@ -23,7 +23,7 @@ repos:
       # which is problematic for codespell
       - id: "mixed-line-ending"
         args:
-          - "--fix=lf"
+          - "--fix=crlf"
 
       # Trailing whitespace is evil
       - id: trailing-whitespace
