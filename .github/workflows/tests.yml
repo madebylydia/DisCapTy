@@ -9,8 +9,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        # In top of 3.7, 3.8, 3.9 and 3.10, we also install the latest version of Python
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.9', '3.10']
 
     runs-on: ubuntu-latest
 
