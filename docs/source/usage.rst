@@ -9,3 +9,9 @@ Creating a Captcha Challenge
 
 Using DisCapTy, you will be introduced with the concept of "challenge".
 Challenges are what takes cares of creating captchas
+
+Tests
+=====
+
+.. automodule:: discapty.generators
+    :members: TextGenerator, WheezyGenerator, ImageGenerator

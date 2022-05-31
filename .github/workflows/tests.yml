@@ -11,7 +11,7 @@ jobs:
       matrix:
         # In top of 3.7, 3.8, 3.9 and 3.10, we also install the latest version of Python
         python-version: ['3.7', '3.8', '3.9', '3.10']
-    
+
     runs-on: ubuntu-latest
 
     name: Tox - v${{ matrix.python-version }}
@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.local
-          key: poetry-0
+          key: poetry-${{ runner.os }}
 
       # Install & configure Poetry
       - name: Install Poetry
@@ -60,4 +60,4 @@ jobs:
 
       # Run DisCapTy's tests
       - name: Run tests
-        run: poetry run python -m unittest tests/test_discapty.py
+        run: poetry run python -m unittest

@@ -1,9 +1,10 @@
-from PIL.ImageFont import truetype
-from typing import List, Optional, Union
 from pathlib import Path
-
 from random import choices, randint
 from string import ascii_uppercase, digits
+from typing import List, Optional, Union
+
+from PIL.ImageColor import getrgb
+from PIL.ImageFont import truetype
 
 
 def check_fonts(*fonts: Union[str, Path]) -> Optional[List[str]]:
@@ -25,6 +26,7 @@ def check_fonts(*fonts: Union[str, Path]) -> Optional[List[str]]:
     if failures:
         return failures
     # NoReturn
+
 
 def random_color(start: int = 0, end: int = 255, opacity: int = 0) -> str:
     """Returns a random color in hexadecimal format.
@@ -53,15 +55,29 @@ def random_color(start: int = 0, end: int = 255, opacity: int = 0) -> str:
             "start, end and opacity parameters must be contained between 0 and 255."
         )
 
-    # Simply return a random number... 
+    # Simply return a random number...
     def rc() -> int:
         return randint(start, end)
 
     # Convert numbers to hexadecimal
     return "#%02X%02X%02X%02X" % (rc(), rc(), rc(), opacity)
 
+
 def random_code(characters_length: int = 4):
     """
     Return a random code with the needed length.
     """
     return "".join(choices(ascii_uppercase + digits, k=characters_length))
+
+
+def validate_str_to_hex(color: str) -> bool:
+    """
+    Validate a string to be a valid hexadecimal color.
+    """
+    if not color:
+        return False
+    try:
+        getrgb(color)
+    except ValueError:
+        return False
+    return True

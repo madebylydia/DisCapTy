@@ -4,10 +4,10 @@
 DisCapTy's API
 ==============
 
-CaptchaGenerator
-----------------
+BaseGenerator
+-------------
 
-.. autoclass:: discapty.CaptchaGenerator
+.. autoclass:: discapty.generators.BaseGenerator
     :members:
 
 Challenge

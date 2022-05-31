@@ -1,80 +1,74 @@
-from typing import Any, Dict
-# from pathlib import Path
-
-# from PIL import ImageFont
-
-from discapty.challenge import Challenge
-
-from .errors import UnexistingChallengeError
-
 class CaptchaQueue:
     """
-    A safe handler for all challenge, which take cares of managing the challenges.
-    
-    It basically offer a sane & internal way to manage everything using a key-value pair
+    A safe handler for taking cares of managing the challenges for the developer.
+
+    It basically offers a sane & internal way to manage everything using a key-value pair
     without ever having to touch the challenges/captcha directly.
     """
-    
-    def __init__(self) -> None:
-        self.queue: Dict[int, Challenge] = {}
 
-    def create_challenge(self, id: int, **kwargs: Dict[Any, Any]) -> Challenge:
-        """Create a challenge for an id. Overwrite the challenge created before, unless the 
-        challenge is not fully completed.
+    # def __init__(self) -> None:
+    #     self.queue: Dict[int, Challenge] = {}
 
-        Parameters
-        ----------
-        id: int
-            The id associated to the generated challenge.
+    # def create_challenge(self, id: int, **kwargs: Dict[Any, Any]) -> Challenge:
+    #     """Create a challenge for an id. Overwrite the challenge created before, unless the
+    #     challenge is not fully completed.
 
-        Returns
-        -------
-        Challenge:
-            The generated challenge.
-        """
-        challenge = Challenge(**kwargs)
-        self.queue[id] = challenge
-        return challenge
+    #     Parameters
+    #     ----------
+    #     id: int
+    #         The id associated to the generated challenge.
 
-    def get_challenge(self, id: int) -> Challenge:
-        """Get the challenge of an id, if it exist.
+    #     Returns
+    #     -------
+    #     Challenge:
+    #         The generated challenge.
+    #     """
+    #     challenge = Challenge(**kwargs)
+    #     self.queue[id] = challenge
+    #     return challenge
 
-        Parameters
-        ----------
-        id: int
-            The id associated to the challenge.
+    # def get_challenge(self, id: int) -> Challenge:
+    #     """Get the challenge of an id, if it exist.
 
-        Returns
-        -------
-        Challenge:
-            The challenge associated to the id.
+    #     Parameters
+    #     ----------
+    #     id: int
+    #         The id associated to the challenge.
 
-        Raises
-        ------
-        :py:exc:`~errors.UnexistingChallengeError`:
-            If the given id does not have any associated challenge, raise this error.
-        """
-        try:
-            return self.queue[id]
-        except KeyError as error:
-            raise UnexistingChallengeError(f"Challenge for id '{error}' does not exist.") from None
+    #     Returns
+    #     -------
+    #     Challenge:
+    #         The challenge associated to the id.
 
-    def delete_challenge(self, id: int):
-        """Delete a challenge of an id, if it exist.
+    #     Raises
+    #     ------
+    #     :py:exc:`~errors.UnexistingChallengeError`:
+    #         If the given id does not have any associated challenge, raise this error.
+    #     """
+    #     try:
+    #         return self.queue[id]
+    #     except KeyError as error:
+    #         raise UnexistingChallengeError(
+    #             f"Challenge for id '{error}' does not exist."
+    #         ) from None
 
-        Parameters
-        ----------
-        id: int
-            The id associated to the challenge.
+    # def delete_challenge(self, id: int):
+    #     """Delete a challenge of an id, if it exist.
 
-        Raises
-        ------
-        :py:exc:`~errors.UnexistingChallengeError`:
-            If the given id does not have any associated challenge, raise this error.
-        """
-        # Raises an error if does not exist.
-        self.get_challenge(id)
-        del self.queue[id]
+    #     Parameters
+    #     ----------
+    #     id: int
+    #         The id associated to the challenge.
+
+    #     Raises
+    #     ------
+    #     :py:exc:`~errors.UnexistingChallengeError`:
+    #         If the given id does not have any associated challenge, raise this error.
+    #     """
+    #     # Raises an error if does not exist.
+    #     self.get_challenge(id)
+    #     del self.queue[id]
+
 
 # CHALLENGES: Dict[int, Challenge] = {}
 

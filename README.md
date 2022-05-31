@@ -1,4 +1,4 @@
-# DisCaPty
+# DisCapTy [![Verified on Openbase](https://badges.openbase.com/python/verified/DisCapTy.svg?style=openbase)](https://openbase.com/python/DisCapTy?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
 
 ![DisCapTy's Logo](.github/discapty.png)
 
@@ -11,6 +11,7 @@ DisCaPty is a Python module to generate Captcha images without struggling your m
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/discapty?color=blue)
 [![Documentation Status](https://readthedocs.org/projects/discapty/badge/?version=latest)](https://discapty.readthedocs.io/en/latest/?badge=latest)
 
+
 # Installing
 
 DisCaPty is available on PyPi!
@@ -18,7 +19,7 @@ DisCaPty is available on PyPi!
 ```sh
 pip3 install discapty
 ```
-You require a version higher 
+You require a version higher
 
 # Clone & Test the project
 
@@ -36,31 +37,36 @@ DisCapTy include 3 differents types of Captcha style.
 You can choose which type to use when creating a Captcha object.
 
 Example:
+
 ```py
 import discapty
 
 captcha = discapty.Captcha("wheezy")
 # You are initializing a Captcha object that is the "wheezy" type.
 # If you want to show the image/captcha, use generate_captcha()
-captcha_image = captcha.generate_captcha() # <_io.BytesIO object at XxXXX>
+captcha_image = captcha.generate_captcha()  # <_io.BytesIO object at XxXXX>
 ```
 
 However, using the "text" type will not return a BytesIO object but a string.
+
 ```py
 import discapty
 
-captcha = discapty.Captcha("text")
-captcha_image = captcha.generate_captcha() # This will return a string, not a BytesIO object.
+captcha = discapty.Captcha("text_color")
+captcha_image = captcha.generate_captcha()  # This will return a string, not a BytesIO object.
 ```
 
 You can also easily create an embed.
+
 ```py
 import discapty
 
+
 async def send_captcha(ctx):
     captcha = discapty.Captcha("image")
-    captcha_image = discord.File(captcha.generate_captcha(), filename="captcha.png") # This is # # important to put this filename, otherwise Discord will send the image outside of the embed.
-    # You can change it when generating the embed. 
+    captcha_image = discord.File(captcha.generate_captcha(),
+                                 filename="captcha.png")  # This is # # important to put this filename, otherwise Discord will send the image outside of the embed.
+    # You can change it when generating the embed.
     captcha_embed = captcha.generate_embed(ctx.guild.name)
     await ctx.channel.send(embed=captcha_embed, file=captcha_image)
 ```
@@ -73,13 +79,14 @@ The power of DisCapTy is how it let you customize your Captcha by using the setu
 ```py
 import discapty
 
+
 def generate_captcha():
     captcha = discapty.Captcha("wheezy")
 
     # This function is what allow developers to set addition settings for their captcha, refer to the function's help for more parameters to use.
     captcha.setup(width=400, height=400, noise_color="#FF0000")
 
-    return discapty.generate_embed() # Return the image with the settings that has been set.
+    return discapty.generate_embed()  # Return the image with the settings that has been set.
 ```
 
 # Contact
