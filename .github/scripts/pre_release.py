@@ -33,7 +33,7 @@ def check_local_version_against_pyproject(discapty_version: str):
         os.path.join(__file__, "..", "..", "pyproject.toml")
     )
 
-    with open(pyproject_file, "") as f:
+    with open(pyproject_file, "r") as f:
         pyproject_version = REG.search(f.read())
 
         if not pyproject_version:
