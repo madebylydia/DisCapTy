@@ -132,6 +132,5 @@ dmypy.json
 .idea/
 
 # VSCode
-.vscode/
+.vscode/*
 !.vscode/extensions.json
-!.vscode/launch.json

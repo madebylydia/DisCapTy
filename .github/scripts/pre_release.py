@@ -24,9 +24,11 @@ def check_pypi_version(local_version: str):
     if local_version == remote_version:
         # The local & the remote version are the same: PyPi will reject the upload
         print(
-            "Local version and remote version are the same, the version must be changed first!"
+            "[PyPi] Local version and remote version are the same, the version must be updated first!"
         )
         exit(1)
+
+    print("[PyPi] OK")
 
 
 def check_local_version_against_pyproject(discapty_version: str):
@@ -39,6 +41,8 @@ def check_local_version_against_pyproject(discapty_version: str):
             "Local version and PyProject version does not match, please fix it first!"
         )
         exit(1)
+
+    print("[PyProject] OK")
 
 
 def main():
