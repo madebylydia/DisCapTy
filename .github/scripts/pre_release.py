@@ -4,6 +4,7 @@ import os
 
 import discapty
 
+import importlib.metadata
 
 REG = re.compile(r"^version = \"(.*)\"")
 
@@ -29,22 +30,15 @@ def check_pypi_version(local_version: str):
 
 
 def check_local_version_against_pyproject(discapty_version: str):
-    pyproject_file = os.path.abspath(
-        os.path.join(__file__, "..", "..", "..", "pyproject.toml")
-    )
+    pyproject_version = importlib.metadata.version("discapty")
 
-    with open(pyproject_file, "r") as f:
-        pyproject_version = REG.search(f.read())
+    print("[PyProject] PyProject version: %s", pyproject_version)
 
-        if not pyproject_version:
-            raise LookupError("[PyProject] Could not find version in pyproject.toml")
-
-        pyproject_version = pyproject_version.group(0)
-
-        if pyproject_version != discapty_version:
-            raise ValueError(
-                "[PyProject] The version in pyproject.toml does not match the version in the package"
-            )
+    if discapty_version != pyproject_version:
+        print(
+            "Local version and PyProject version does not match, please fix it first!"
+        )
+        exit(1)
 
 
 def main():
