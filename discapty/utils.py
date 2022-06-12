@@ -1,3 +1,7 @@
+#  Copyright (c) 2022​-present - Predeactor - Licensed under the MIT License.
+#  See the LICENSE file included with the file for more information about this project's
+#   license.
+
 from pathlib import Path
 from random import choices, randint
 from string import ascii_uppercase, digits
@@ -51,9 +55,7 @@ def random_color(start: int = 0, end: int = 255, opacity: int = 0) -> str:
         If any of `start`, `end` or `opacity` is not contained between 0 and 255.
     """
     if not all([0 <= attribute <= 255 for attribute in (start, end, opacity)]):
-        raise ValueError(
-            "start, end and opacity parameters must be contained between 0 and 255."
-        )
+        raise ValueError("start, end and opacity parameters must be contained between 0 and 255.")
 
     # Simply return a random number...
     def rc() -> int:
@@ -63,11 +65,11 @@ def random_color(start: int = 0, end: int = 255, opacity: int = 0) -> str:
     return "#%02X%02X%02X%02X" % (rc(), rc(), rc(), opacity)
 
 
-def random_code(characters_length: int = 4):
+def random_code(characters_length: Optional[int] = None):
     """
     Return a random code with the needed length.
     """
-    return "".join(choices(ascii_uppercase + digits, k=characters_length))
+    return "".join(choices(ascii_uppercase + digits, k=characters_length or 4))
 
 
 def validate_str_to_hex(color: str) -> bool:

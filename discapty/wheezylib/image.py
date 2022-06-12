@@ -116,15 +116,11 @@ def text(
     fonts: typing.Sequence[str],
     fonts_sizes: typing.Tuple[int, ...],
     *,
-    drawings: typing.Optional[
-        typing.Sequence[typing.Callable[[Image.Image], Image.Image]]
-    ],
+    drawings: typing.Optional[typing.Sequence[typing.Callable[[Image.Image], Image.Image]]],
     text_color: str = "#5C87B2",
     squeeze_factor: float = 0.8,
 ) -> typing.Callable[[Image.Image, str], Image.Image]:
-    tt_fonts = tuple(
-        [ImageFont.truetype(name, size) for name in fonts for size in fonts_sizes]
-    )
+    tt_fonts = tuple([ImageFont.truetype(name, size) for name in fonts for size in fonts_sizes])
     color = ImageColor.getrgb(text_color)
 
     def render(image: Image.Image, text_input: str) -> Image.Image:
@@ -168,9 +164,7 @@ def text(
         for character in characters:
             character_width, character_height = character.size
             mask = character.convert("L").point(lambda x: int(x * 1.97))  # type: ignore
-            image.paste(
-                character, (image_offset, int((height - character_height) / 2)), mask
-            )
+            image.paste(character, (image_offset, int((height - character_height) / 2)), mask)
             image_offset += int(character_width * squeeze_factor)
 
         return image
@@ -190,9 +184,7 @@ def warp(
         x2 = int(uniform(-dx, dx))
         y2 = int(uniform(-dy, dy))
 
-        new_image = Image.new(
-            "RGB", (width + abs(x1) + abs(x2), height + abs(y1) + abs(y2))
-        )
+        new_image = Image.new("RGB", (width + abs(x1) + abs(x2), height + abs(y1) + abs(y2)))
         new_image.paste(image, (abs(x1), abs(y1)))
         width, height = new_image.size
         return new_image.transform(

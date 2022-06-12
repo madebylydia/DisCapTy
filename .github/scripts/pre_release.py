@@ -1,10 +1,9 @@
+import importlib.metadata
 import re
+
 import requests
-import os
 
 import discapty
-
-import importlib.metadata
 
 REG = re.compile(r"^version = \"(.*)\"")
 
@@ -37,9 +36,7 @@ def check_local_version_against_pyproject(discapty_version: str):
     print("[PyProject] PyProject version: %s", pyproject_version)
 
     if discapty_version != pyproject_version:
-        print(
-            "Local version and PyProject version does not match, please fix it first!"
-        )
+        print("Local version and PyProject version does not match, please fix it first!")
         exit(1)
 
     print("[PyProject] OK")

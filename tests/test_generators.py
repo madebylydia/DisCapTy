@@ -1,16 +1,19 @@
+#  Copyright (c) 2022​-present - Predeactor - Licensed under the MIT License.
+#  See the LICENSE file included with the file for more information about this project's
+#   license.
+
 import unittest
 
 import PIL.Image
 
-from discapty.generators import (
-    BaseGenerator,
-    ImageGenerator,
-    TextGenerator,
-    WheezyGenerator,
-)
+from discapty.generators import BaseGenerator, ImageGenerator, TextGenerator, WheezyGenerator
 
 
 class TestGenerator(unittest.TestCase):
+    """
+    Test the discapty.generators.BaseGenerator object.
+    """
+
     given_input = "WORK"
     expected_output = "W+O+R+K"
 
@@ -35,10 +38,20 @@ class TestTextGenerator(unittest.TestCase):
         Test the generate method of TextGenerator.
         """
         text = "WORK"
-        expected_output = "W+O+R+K"
+        expected_output = r"W+O+R+K"
 
         output = TextGenerator(separator="+").generate(text)
         self.assertEqual(output, expected_output)
+
+    def test_generate_text_with_separator_list(self):
+        """
+        Test the generate method of TextGenerator that contains a list as separator.
+        """
+        text = "WORK"
+        expected_output = r"W\+|-O\+|-R\+|-K"
+
+        output = TextGenerator(separator=["+", "-"]).generate(text)
+        self.assertRegex(output, expected_output)
 
 
 class TestWheezyGenerator(unittest.TestCase):

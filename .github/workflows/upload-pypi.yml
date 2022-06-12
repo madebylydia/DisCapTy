@@ -1,12 +1,10 @@
 name: Publish to PyPI
 on:
-  workflow_dispatch:
   push:
     tags:
     - "*"
 
 jobs:
-
   test:
     name: Run tests
     uses: ./.github/workflows/tests.yml
@@ -60,6 +58,8 @@ jobs:
     - name: Install dependencies
       run: poetry install -n
 
+    - name: Build package
+      run: poetry build -n
+
     - name: Build and publish
-      run: poetry debug
-      # run: poetry publish --build --username "__token__" --password "${{ secrets.PYPI_API_TOKEN }}"
+      run: poetry publish --build --username "__token__" --password "${{ secrets.PYPI_API_TOKEN }}"

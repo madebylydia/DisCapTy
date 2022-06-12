@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2022 Andriy Kornatskyy & Julien Mauroy
+# Copyright (C) 2011 Andriy Kornatskyy
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation

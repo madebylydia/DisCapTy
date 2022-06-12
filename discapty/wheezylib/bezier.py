@@ -1,6 +1,3 @@
-#  Copyright (c) 2022​-present - Andriy Kornatskyy - Licensed under the MIT License.
-#  See the LICENSE file included with the file for more information about this project's
-#   license.
 from typing import Dict, List
 
 sequence = tuple(t / 20.0 for t in range(21))

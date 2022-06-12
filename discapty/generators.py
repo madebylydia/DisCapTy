@@ -28,6 +28,52 @@ DEFAULT_FONTS = [join(PATH, f) for f in listdir(PATH) if isfile(join(PATH, f))]
 class BaseGenerator(pydantic.BaseModel, metaclass=ABCMeta):
     """
     Base class for all generators.
+
+    A generator is used to especially generate a Captcha object based on a given text.
+    A generator looks like this:
+
+    .. code-block:: python
+
+       class MyGenerator(BaseGenerator):
+           def generate(self, text: str) -> str:
+               return "+".join(text)
+
+
+    A generator can be supplied with parameters using class's attributes, for example:
+
+
+    .. code-block:: python
+
+       class MyGenerator(BaseGenerator):
+           separator = "+"
+
+           def generate(self, text: str) -> str:
+               return self.separator.join(text)
+
+       gen1 = MyGenerator()  # Separator here is "+"
+       gen2 = MyGenerator(separator="-")  # Separator here is "-"
+
+
+    Here, separator has a default value, which can be overridden by the user, or not.
+    If you wish to create a generator with a required value, you can "...", like this:
+
+
+    .. code-block:: python
+
+       class MyGenerator(BaseGenerator):
+           separator: str = ...
+
+           ...
+
+       MyGenerator(separator="+")  # Works! 👍
+       MyGenerator()  # Raises an error! 👎
+
+
+    If you wish to know more on that subject, visit Pydantic's documentation as this is what
+    :py:obj:`BaseGenerator` uses under the hood.
+    https://pydantic-docs.helpmanual.io/
+
+    .. versionadded:: 2.0.0
     """
 
     class Config:
@@ -49,7 +95,7 @@ class BaseGenerator(pydantic.BaseModel, metaclass=ABCMeta):
         return [key for key, value in self.__fields__.items() if not value.required]
 
     @abstractmethod
-    def generate(self, text: str):
+    def generate(self, text: str) -> typing.Any:
         """
         A method that needs to be implemented by the child class.
         This method will return the Captcha that the user has requested. For example:
@@ -83,11 +129,11 @@ class WheezyGenerator(BaseGenerator):
     noise_level: int = 2
 
     @pydantic.validator("fonts_size")
-    def as_many_size_as_fonts(cls, v, values):
+    def as_many_size_as_fonts(
+        cls, v: typing.Tuple[int, ...], values: typing.Dict[str, typing.Any]
+    ):
         if "fonts" in values and len(v) != len(values["fonts"]):
-            raise ValueError(
-                "The number of fonts_size must be equal to the number of fonts"
-            )
+            raise ValueError("The number of fonts_size must be equal to the number of fonts")
         return v
 
     def generate(self, text: str) -> PIL.Image.Image:
@@ -95,8 +141,7 @@ class WheezyGenerator(BaseGenerator):
         Generate a wheezy image. See https://imgur.com/a/l9V09PN.
         """
         fonts: typing.List[str] = [
-            font if isinstance(font, str) else font.absolute().as_posix()
-            for font in self.fonts
+            font if isinstance(font, str) else font.absolute().as_posix() for font in self.fonts
         ]
 
         fn = wheezy_captcha.captcha(
@@ -135,8 +180,8 @@ class ImageGenerator(BaseGenerator):
     fonts: typing.Sequence[pydantic.FilePath | str] = DEFAULT_FONTS
     fonts_size: typing.Tuple[int, ...] = (50,)
 
-    background_color: Color = random_color(238, 255)
-    text_color: Color = random_color(10, 200, 100)
+    background_color: Color = pydantic.Field(random_color(238, 255))
+    text_color: Color = pydantic.Field(random_color(10, 200, 100))
     number_of_dots: int = 100
     width_of_dots: int = 3
     number_of_curves: int = 1
@@ -153,10 +198,7 @@ class ImageGenerator(BaseGenerator):
     ) -> typing.Tuple[PIL.ImageFont.FreeTypeFont, ...]:
         return tuple(
             PIL.ImageFont.truetype(n, s)
-            for n in [
-                f.absolute().as_posix() if isinstance(f, pathlib.Path) else f
-                for f in font
-            ]
+            for n in [f.absolute().as_posix() if isinstance(f, pathlib.Path) else f for f in font]
             for s in fonts_sizes
         )
 
@@ -271,9 +313,7 @@ class ImageGenerator(BaseGenerator):
     def generate(self, text: str) -> PIL.Image.Image:
         """Generate a Captcha image. See x"""
         im = self.create_captcha_image(chars=text)
-        self.create_noise_dots(
-            im, self.text_color, self.width_of_dots, self.number_of_dots
-        )
+        self.create_noise_dots(im, self.text_color, self.width_of_dots, self.number_of_dots)
         self.create_noise_curve(im, self.text_color, self.number_of_curves)
         im = im.filter(PIL.ImageFilter.SMOOTH)
         return im
@@ -294,7 +334,7 @@ class TextGenerator(BaseGenerator):
         if isinstance(self.separator, str):
             return self.separator.join(text)
         new_string: str = ""
-        for character in text:
+        for position, character in enumerate(text):
             char = choice(self.separator)
-            new_string += character + char
+            new_string += character + (char if position < len(text) - 1 else "")
         return new_string

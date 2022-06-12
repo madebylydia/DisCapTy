@@ -14,15 +14,16 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+from discapty import __version__
 
 # -- Project information -----------------------------------------------------
 
 project = "DisCapTy"
-copyright = "2022, Julien Mauroy"
-author = "Julien Mauroy"
+copyright = "2022, Predeactor"
+author = "Predeactor"
 
 # The full version, including alpha/beta/rc tags
-release = "2.0.0"
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------

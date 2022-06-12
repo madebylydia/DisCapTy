@@ -4,7 +4,7 @@
 
 DisCaPty is a Python module to generate Captcha images without struggling your mind on how to make your own. Everyone can use it!
 
-**Documentation:** https://discapty.readthedocs.io
+**Documentation:** https://discapty.readthedocs.io/
 
 ![PyPI](https://img.shields.io/pypi/v/discapty)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/discapty)
@@ -12,88 +12,81 @@ DisCaPty is a Python module to generate Captcha images without struggling your m
 [![Documentation Status](https://readthedocs.org/projects/discapty/badge/?version=latest)](https://discapty.readthedocs.io/en/latest/?badge=latest)
 
 
-# Installing
+## Installing
 
 DisCaPty is available on PyPi!
 
 ```sh
 pip3 install discapty
 ```
-You require a version higher
 
-# Clone & Test the project
+To use DisCapTy, you need a Python version equal or greater to `3.10`.
 
-This project is dependant of [Poetry](), a dependency managemer tool. You are most likely going to require this tool to correctly interact with the project, check out [Poetry's documentation](https://python-poetry.org/docs) for how to install it.
+## Clone & Test the project
+
+This project is dependant of [Poetry](https://python-poetry.org), a dependency management tool. You are most likely going to require this tool to correctly interact with the project & its dependencies, check out [Poetry's documentation](https://python-poetry.org/docs) for how to install it.
 
 After then, clone the repository & run `poetry install`
 
-# Creating Captcha
+## Creating Captcha
 
-DisCapTy include 3 differents types of Captcha style.
-- text: A Captcha that use plain text. This type is particular as it include a zero width space character between each letter/number to unallow the user to copy/paste the captcha.
-- wheezy: An image Captcha, pretty basic and easy to read. Configurable
-- image: An image Captcha, a bit more hard to read, less user friendly. Configurable.
+For DisCapTy, a Captcha is simply a code with any possible objects that can be returned, for example, it is one code (Like "12345") with an image (Usually a `PIL.Image.Image` object)
+This is because DisCapTy uses the concept of generators that are used to generate a captcha from a given code, and it can return anything.
 
-You can choose which type to use when creating a Captcha object.
+DisCapTy comes with 2 builtin generators:
+- TextGenerator : Text based captcha
+- WheezyGenerator : Image based captcha
+- ImageGenerator : Image based captcha
 
-Example:
-
-```py
-import discapty
-
-captcha = discapty.Captcha("wheezy")
-# You are initializing a Captcha object that is the "wheezy" type.
-# If you want to show the image/captcha, use generate_captcha()
-captcha_image = captcha.generate_captcha()  # <_io.BytesIO object at XxXXX>
-```
-
-However, using the "text" type will not return a BytesIO object but a string.
+### Creating Captcha manually
 
 ```py
 import discapty
 
-captcha = discapty.Captcha("text_color")
-captcha_image = captcha.generate_captcha()  # This will return a string, not a BytesIO object.
+def generate_a_captcha(initial_input: str) -> discapty.Captcha:
+    # This generator returns an obfuscated text.
+    captcha_for_user = discapty.TextGenerator().generate(initial_input)
+    # Create a Captcha object, the first argument is the clear code, the second is the obfuscated code. Anything goes.
+    return discapty.Captcha(initial_input, captcha_for_user)
+
+# Generate your Captcha.
+captcha = generate_a_captcha("12345")
+
+# Show the obfuscated code. See https://discapty.readthedocs.io for more information on this object.
+show_captcha_to_user(captcha.captcha)
 ```
 
-You can also easily create an embed.
+### Checking user's input
 
 ```py
 import discapty
 
+# Generate your Captcha.
+captcha: discapty.Captcha = generate_a_captcha("12345")
 
-async def send_captcha(ctx):
-    captcha = discapty.Captcha("image")
-    captcha_image = discord.File(captcha.generate_captcha(),
-                                 filename="captcha.png")  # This is # # important to put this filename, otherwise Discord will send the image outside of the embed.
-    # You can change it when generating the embed.
-    captcha_embed = captcha.generate_embed(ctx.guild.name)
-    await ctx.channel.send(embed=captcha_embed, file=captcha_image)
+# This is your user's input here
+user_input: str = '12345'
+
+if captcha.check(user_input):
+    # The user input is correct
+    print("Correct!")
+else:
+    # The user input is incorrect
+    print("Incorrect!")
 ```
 
-# Create more complex Captcha
+What's great with the `.check` method is that you can specify if you need to remove space in the user's input and/or check casing.
 
-The power of DisCapTy is how it let you customize your Captcha by using the setup function.
-**When using this function, it is recommended to use number that are reasonable enough to not overload your machine. Image creation may take time if you abuse of it, and memory can also go high.**
-
-```py
-import discapty
+This is not a recommended way, because DisCapTy comes with its opinionated challenge runner.
 
 
-def generate_captcha():
-    captcha = discapty.Captcha("wheezy")
 
-    # This function is what allow developers to set addition settings for their captcha, refer to the function's help for more parameters to use.
-    captcha.setup(width=400, height=400, noise_color="#FF0000")
-
-    return discapty.generate_embed()  # Return the image with the settings that has been set.
-```
-
-# Contact
+## Contact
 
 You can join my Discord server for any help: https://discord.gg/aPVupKAxxP
 
-DisCapTy is licensied under MIT: ![PyPI - License](https://img.shields.io/pypi/l/discapty)
+DisCapTy is an open-source project distributed under the MIT license:
+![PyPI - License](https://img.shields.io/pypi/l/discapty?style=flat-square)
 
-DisCapTy use the Roboto font as default font.
-This font is licensied under [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
+DisCapTy uses the [Roboto](https://fonts.google.com/specimen/Roboto) font as default font.
+[This font](https://fonts.google.com/specimen/Roboto) is licensed under [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
