@@ -19,7 +19,7 @@ from discapty import __version__
 # -- Project information -----------------------------------------------------
 
 project = "DisCapTy"
-copyright = "2022, Predeactor"
+docs_copyright = "2022, Predeactor"
 author = "Predeactor"
 
 # The full version, including alpha/beta/rc tags

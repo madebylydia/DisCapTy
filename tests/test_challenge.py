@@ -16,16 +16,14 @@ class TestChallenge(unittest.TestCase):
     def test_create_challenge_with_wrong_generator(self):
         """
         Attempt to create a Challenge object by supplying a generator that does not
-        inherit from BaseGenerator. Raises an exception.
+        inherit from Generator. Raises an exception.
         """
 
         class MyGen:
             def generate(self, text: str) -> str:
                 return "+".join(text)
 
-        with self.assertRaisesRegex(
-            TypeError, r"The generator must be a subclass of BaseGenerator"
-        ):
+        with self.assertRaisesRegex(TypeError, r"The generator must be a subclass of Generator"):
             Challenge(MyGen)  # type: ignore
 
     def test_create_challenge(self):

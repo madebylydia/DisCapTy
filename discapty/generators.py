@@ -25,7 +25,7 @@ PATH = join(abspath(dirname(__file__)), "fonts")
 DEFAULT_FONTS = [join(PATH, f) for f in listdir(PATH) if isfile(join(PATH, f))]
 
 
-class BaseGenerator(pydantic.BaseModel, metaclass=ABCMeta):
+class Generator(pydantic.BaseModel, metaclass=ABCMeta):
     """
     Base class for all generators.
 
@@ -34,7 +34,7 @@ class BaseGenerator(pydantic.BaseModel, metaclass=ABCMeta):
 
     .. code-block:: python
 
-       class MyGenerator(BaseGenerator):
+       class MyGenerator(Generator):
            def generate(self, text: str) -> str:
                return "+".join(text)
 
@@ -44,7 +44,7 @@ class BaseGenerator(pydantic.BaseModel, metaclass=ABCMeta):
 
     .. code-block:: python
 
-       class MyGenerator(BaseGenerator):
+       class MyGenerator(Generator):
            separator = "+"
 
            def generate(self, text: str) -> str:
@@ -55,12 +55,12 @@ class BaseGenerator(pydantic.BaseModel, metaclass=ABCMeta):
 
 
     Here, separator has a default value, which can be overridden by the user, or not.
-    If you wish to create a generator with a required value, you can "...", like this:
+    If you wish to create a generator with a required value, you can use "...", like this:
 
 
     .. code-block:: python
 
-       class MyGenerator(BaseGenerator):
+       class MyGenerator(Generator):
            separator: str = ...
 
            ...
@@ -70,7 +70,7 @@ class BaseGenerator(pydantic.BaseModel, metaclass=ABCMeta):
 
 
     If you wish to know more on that subject, visit Pydantic's documentation as this is what
-    :py:obj:`BaseGenerator` uses under the hood.
+    :py:obj:`Generator` uses under the hood.
     https://pydantic-docs.helpmanual.io/
 
     .. versionadded:: 2.0.0
@@ -102,14 +102,14 @@ class BaseGenerator(pydantic.BaseModel, metaclass=ABCMeta):
 
         .. code-block:: python
 
-           class MyGenerator(BaseGenerator):
+           class MyGenerator(Generator):
                def generate(self, text: str) -> str:
                    return '+'.join(text)
         """
         raise NotImplementedError()
 
 
-class WheezyGenerator(BaseGenerator):
+class WheezyGenerator(Generator):
     """
     A wheezy image Captcha generator.
     Comes with many customizable settings.
@@ -172,7 +172,7 @@ class WheezyGenerator(BaseGenerator):
         return fn(text)
 
 
-class ImageGenerator(BaseGenerator):
+class ImageGenerator(Generator):
     """
     Create an image CAPTCHA.
     """
@@ -319,7 +319,7 @@ class ImageGenerator(BaseGenerator):
         return im
 
 
-class TextGenerator(BaseGenerator):
+class TextGenerator(Generator):
     """
     A text-based Captcha generator.
     Most insecure, but it is the most tricky.

@@ -7,19 +7,19 @@ import typing
 
 from discapty.challenge import Challenge
 from discapty.errors import NonexistingChallengeError
-from discapty.generators import BaseGenerator
+from discapty.generators import Generator
 
 
 class CaptchaQueue:
     """
     A safe handler for taking cares of managing the challenges for the developer.
 
-    It basically offers a sane & internal way to manage everything using a key-value pair
+    It basically offers a sane & internal way to manage your captcha using a key-value pair
     without ever having to touch the challenges/captcha directly.
 
     Parameters
     ----------
-    generators: typing.Union[BaseGenerator, typing.List[BaseGenerator]]
+    generators: typing.Union[Generator, typing.List[Generator]]
         A list or a single generator to use for creating the challenges.
         If a list is given, a random generator will be picked up when using `create_challenge`.
 
@@ -37,11 +37,11 @@ class CaptchaQueue:
 
     def __init__(
         self,
-        generators: typing.Union[BaseGenerator, typing.List[BaseGenerator]],
+        generators: typing.Union[Generator, typing.List[Generator]],
         *,
         queue: typing.Optional[typing.Dict[str, Challenge]] = None,
     ) -> None:
-        self.generators: typing.List[BaseGenerator] = []
+        self.generators: typing.List[Generator] = []
         if isinstance(generators, list):
             for generator in generators:
                 self.generators.append(generator)
@@ -118,7 +118,7 @@ class CaptchaQueue:
                 f"Challenge with id '{challenge_id}' does not exist."
             ) from e
 
-    def delete_challenge(self, challenge_id: str):
+    def delete_challenge(self, challenge_id: str) -> None:
         """Delete a challenge of an id, if it exist.
 
         Parameters

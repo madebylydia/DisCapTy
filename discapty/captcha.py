@@ -34,15 +34,15 @@ class Captcha:
     def __init__(
         self,
         code: str,
-        captcha: typing.Any,
+        captcha_object: typing.Any,
     ) -> None:
         self.code = code
-        self.captcha = captcha
+        self.captcha_object = captcha_object
 
-        self.type = type(self.captcha)
+        self.type = type(self.captcha_object)
 
     def __repr__(self) -> typing.Any:
-        return self.captcha
+        return f"<Captcha type={self.type}>"
 
     def check(self, text: str, *, force_casing: bool = False, remove_space: bool = True) -> bool:
         # Remove spaces if needed.

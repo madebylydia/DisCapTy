@@ -7,7 +7,7 @@ DisCaPty is a Python module to generate Captcha images & challenges without stru
 
 **Features:**
 
-* Highly customizable Captcha generation
+* Highly customizable Captcha generation / Hackable
 * Developer & user friendly
 * Extendable with your own/third-party generators
 
@@ -17,10 +17,5 @@ Pages
 .. toctree::
     :titlesonly:
 
-    source/usage
-    source/terminology
+    source/introduction
     source/api
-
-.. * :ref:`genindex`
-.. * :ref:`modindex`
-.. * :ref:`DisCapTy's API`

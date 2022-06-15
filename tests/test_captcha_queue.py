@@ -1,7 +1,7 @@
 import unittest
 
-from discapty import CaptchaQueue, TextGenerator, Challenge
 import discapty
+from discapty import CaptchaQueue, Challenge, TextGenerator
 
 
 class TestCaptchaQueue(unittest.TestCase):

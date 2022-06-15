@@ -6,12 +6,12 @@ import unittest
 
 import PIL.Image
 
-from discapty.generators import BaseGenerator, ImageGenerator, TextGenerator, WheezyGenerator
+from discapty.generators import Generator, ImageGenerator, TextGenerator, WheezyGenerator
 
 
 class TestGenerator(unittest.TestCase):
     """
-    Test the discapty.generators.BaseGenerator object.
+    Test the discapty.generators.Generator object.
     """
 
     given_input = "WORK"
@@ -22,7 +22,7 @@ class TestGenerator(unittest.TestCase):
         Attempt to create a generator well-built with the correct parameters.
         """
 
-        class MyGen(BaseGenerator):
+        class MyGen(Generator):
             sep: str = "-"
 
             def generate(self, text: str):
