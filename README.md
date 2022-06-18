@@ -39,7 +39,7 @@ After then, clone the repository & run `poetry install`
 For DisCapTy, a Captcha is simply a code with any possible objects that can be returned, for example, it is one code (Like "12345") with an image (Usually a `PIL.Image.Image` object)
 This is because DisCapTy uses the concept of generators that are used to generate a captcha from a given code, and it can return anything.
 
-DisCapTy comes with 2 builtin generators:
+DisCapTy comes with 3 builtin generators:
 
 - TextGenerator : Text based captcha
 - WheezyGenerator : Image based captcha
