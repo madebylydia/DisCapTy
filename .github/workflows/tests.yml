@@ -1,0 +1,63 @@
+name: Run tests
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  test:
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ['3.10']
+
+    runs-on: ubuntu-latest
+
+    name: Tox - v${{ matrix.python-version }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Install Python
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Load the cached installation of Poetry
+      - name: Load cached Poetry installation
+        id: cached-poetry
+        uses: actions/cache@v2
+        with:
+          path: ~/.local
+          key: poetry-${{ runner.os }}
+
+      # Install & configure Poetry
+      - name: Install Poetry
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      # Load the cached venv (If any)
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+      # Install all dependencies required by DisCapTy
+      - name: Install external dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install -n --no-root
+
+      # Install DisCapTy itself
+      - name: Install DisCapTy
+        run: poetry install -n
+
+      # Run DisCapTy's tests
+      - name: Run tests
+        run: poetry run python -m unittest

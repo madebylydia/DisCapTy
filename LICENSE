@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2021 Predeactor
+Copyright (c) 2021-present Julien Mauroy
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,5 +24,5 @@ This project use https://github.com/lepture/captcha for the major part of this m
 Full license available at:
 https://github.com/lepture/captcha/blob/e0f370f22fd571feca43ae43f97dd7206939de4b/LICENSE
 
-This project use the Roboto font which is licensied under Apache-2.0. Full license
+This project use the Roboto font which is licensed under Apache-2.0. Full license
 available at: https://www.apache.org/licenses/LICENSE-2.0.
