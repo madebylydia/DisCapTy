@@ -1,7 +1,7 @@
 name: Publish to PyPI
 on:
   release:
-    types: [prereleased, released]
+    types: [published, released, prereleased]
 
 jobs:
   test:
@@ -14,7 +14,7 @@ jobs:
     uses: ./.github/workflows/prepare-release.yml
 
   deploy:
-    # if: github.repository == 'Predeactor/DisCapTy'
+    if: github.repository == 'Predeactor/DisCapTy'
     runs-on: ubuntu-latest
     environment: release
     name: Deploy DisCapTy to PyPi.
