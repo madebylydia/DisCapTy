@@ -5,7 +5,7 @@ DisCapTy's API
 ==============
 
 Generator
-=============
+=========
 
 .. autoclass:: discapty.generators.Generator
     :members:

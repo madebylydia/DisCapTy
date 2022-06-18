@@ -44,6 +44,8 @@ It is where you can check for user's input directly using the ``.check`` functio
    This class does not generates the `CAPTCHA OBJECT` itself, a `GENERATOR` do.
    The `CAPTCHA CLASS` just wrap the `RAW CODE` and the `CAPTCHA OBJECT` together.
 
+.. _intro_challenge:
+
 :py:obj:`discapty.Challenge`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The `CHALLENGE CLASS` is the DisCapTy's implementation of a `CHALLENGE`.
