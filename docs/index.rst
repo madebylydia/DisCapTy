@@ -16,6 +16,21 @@ DisCaPty is a Python module to generate Captcha images & challenges without stru
 * Developer & user friendly
 * Extendable with your own/third-party generators
 
+Installation
+------------
+
+To install DisCapTy, run the following command in your wished environment:
+
+.. code-block:: shell
+
+   pip install -U DisCapTy
+
+With Poetry:
+
+.. code-block:: shell
+
+   peotry add DisCapTy
+
 Example
 -------
 
