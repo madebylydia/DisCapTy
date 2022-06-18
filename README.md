@@ -1,6 +1,6 @@
 # DisCapTy [![Verified on Openbase](https://badges.openbase.com/python/verified/DisCapTy.svg?style=openbase)](https://openbase.com/python/DisCapTy?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
 
-![DisCapTy's Logo](.github/discapty.png)
+![DisCapTy's Logo](.github/logo.png#gh-dark-mode-only)![DisCapTy's Logo](.github/logo-dark.png#gh-light-mode-only)
 
 DisCaPty is a Python module to generate Captcha images without struggling your
  mind on how to make your own. Everyone can use it!
