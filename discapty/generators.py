@@ -193,12 +193,12 @@ class ImageGenerator(Generator):
 
     @staticmethod
     def _fetch_truefonts(
-        font: typing.List[typing.Union[pydantic.FilePath, str]],
+        fonts: typing.Sequence[pydantic.FilePath | str],
         fonts_sizes: typing.Tuple[int, ...],
     ) -> typing.Tuple[PIL.ImageFont.FreeTypeFont, ...]:
         return tuple(
             PIL.ImageFont.truetype(n, s)
-            for n in [f.absolute().as_posix() if isinstance(f, pathlib.Path) else f for f in font]
+            for n in [f.absolute().as_posix() if isinstance(f, pathlib.Path) else f for f in fonts]
             for s in fonts_sizes
         )
 
@@ -328,7 +328,7 @@ class TextGenerator(Generator):
     The default separator is an invisible space. (\\\\u200B)
     """
 
-    separator: typing.Union[str, typing.List[str]] = "\u200B"
+    separator: str | typing.List[str] = "\u200B"
 
     def generate(self, text: str) -> str:
         if isinstance(self.separator, str):

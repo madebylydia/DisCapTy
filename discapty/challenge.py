@@ -23,11 +23,12 @@ class States(Enum):
 
     Available states are:
 
-    * PENDING   : The challenge is waiting for beginning.
+    * PENDING   : The challenge is waiting to begin.
     * WAITING   : The challenge is waiting for user's input.
     * COMPLETED : The challenge has been completed.
     * FAILED    : The challenge has been failed without trouble.
     * FAILURE   : The challenge has been completed without user's input and in an unexpected way. (e.g. manually cancelled)
+
     """
 
     PENDING = "Pending"
@@ -81,7 +82,7 @@ class Challenge:
         generator: Generator,
         challenge_id: Optional[str] = None,
         *,
-        retries: Optional[int] = None,
+        allowed_retries: Optional[int] = None,
         code: Optional[str] = None,
         code_length: Optional[int] = None,
     ) -> None:
@@ -90,14 +91,15 @@ class Challenge:
         self.code: str = code or random_code(code_length)
         self.challenge_id: str = str(challenge_id or uuid.uuid4())
 
-        self.retries: int = retries or 3
+        self.allowed_retries: int = allowed_retries or 3
         self.failures: int = 0
         self.attempted_tries: int = 0
 
         self.state: States = States.PENDING
         self._fail_reason: Optional[FailReason] = None
 
-        self.__last_captcha_object: Optional[Any] = None
+        self.__last_captcha_class: Optional[Captcha] = None
+        self.__last_code: Optional[str] = None
 
     def _set_state(
         self,
@@ -108,7 +110,14 @@ class Challenge:
         Set challenge's internal state.
         """
         self.state = state
-        if self.state == States.FAILED and fail_reason:
+        if (
+            self.state
+            in (
+                States.FAILED,
+                States.FAILURE,
+            )
+            and fail_reason
+        ):
             self.fail_reason = FailReason(fail_reason).value
 
     @property
@@ -124,46 +133,53 @@ class Challenge:
     def _create_captcha(self) -> Captcha:
         """
         Create a new Captcha object.
-        """
-        generated_captcha = self.generator.generate(self.code)
-        return Captcha(self.code, generated_captcha)
 
-    def get_captcha(self, *, new: bool = False) -> Any:
+        This will return a cached Captcha if the code hasn't changed.
+        """
+        if not self.__last_captcha_class or (self.code != self.__last_code):
+            generated_captcha = self.generator.generate(self.code)
+            self.__last_captcha_class = Captcha(self.code, generated_captcha)
+            self.__last_code = self.code
+        return self.__last_captcha_class
+
+    @property
+    def captcha_object(self) -> Any:
         """
         Get the Captcha object.
-
-        .. warning::
-            This does NOT return a :py:obj:`discapty.Captcha`, but what the user WILL face.
-
-        Parameters
-        ----------
-        new : bool
-            If True, a new Captcha object will be created rather than using the one that was
-            already generated, if applicable.
 
         Returns
         -------
         :py:obj:`typing.Any`
             The Captcha object.
         """
-        if new or (not self.__last_captcha_object):
-            self.__last_captcha_object = self._create_captcha().captcha_object
-        return self.__last_captcha_object
+        return self.captcha.captcha_object
 
     @property
     def captcha(self) -> Captcha:
-        return self.__last_captcha_object or self.get_captcha()
+        """
+        Returns the Captcha class associated to this challenge.
+        """
+        return self._create_captcha()
 
     @property
     def is_completed(self) -> bool:
+        """
+        Check if the challenge has been completed or failed.
+        """
         return self.state in (States.COMPLETED, States.FAILED)
 
     @property
     def is_correct(self) -> Optional[bool]:
+        """
+        Check if the challenge has been completed. If not, return None. If failed, return False.
+        """
         return self.state == States.COMPLETED if self.is_completed else None
 
     @property
     def is_wrong(self) -> Optional[bool]:
+        """
+        Check if the challenge has been failed. If not, return None. If completed, return False.
+        """
         return self.state == States.FAILED if self.is_completed else None
 
     def begin(self) -> Any:
@@ -193,13 +209,13 @@ class Challenge:
         if self.state == States.WAITING:
             raise AlreadyRunningError("Challenge is already being ran")
 
-        self._set_state(States.PENDING)
-        return self.captcha.captcha_object
+        self._set_state(States.WAITING)
+        return self.captcha_object
 
     def check(self, answer: str, *, force_casing: bool = False, remove_space: bool = True) -> bool:
         """
         Check an answer.
-        This will always add +1 to `attempted_tries`.
+        This will always add +1 to `attempted_tries` and `failures` if necessary.
 
         Parameters
         ----------
@@ -229,20 +245,53 @@ class Challenge:
         self.attempted_tries += 1
 
         if not self.captcha.check(answer, force_casing=force_casing, remove_space=remove_space):
+            # If wrong
             self.failures += 1
-            if self.failures >= self.retries:
+            if self.failures >= self.allowed_retries:
                 self._set_state(States.FAILED, FailReason.TOO_MANY_RETRIES)
                 raise TooManyRetriesError(self.fail_reason)
             return False
         else:
+            # If correct
             self._set_state(States.COMPLETED)
             return True
+
+    def reload(self, *, increase_attempted_tries=True, increase_failures=False) -> Any:
+        """
+        Reload the Challenge and its code.
+
+        This method will create a new random code. It will also increase the attempted_tries
+        counter if requested. By defaults, this behavior is executed.
+
+        Parameters
+        ----------
+        increase_attempted_tries : bool
+            If True, the attempted_tries counter will be increased.
+
+        Raises
+        ------
+        TypeError
+            If the challenge cannot be edited or is not already running.
+        """
+        if not self._can_be_modified:
+            raise TypeError("Challenge cannot be edited")
+        if self.state == States.PENDING:
+            raise TypeError("Challenge is not running")
+
+        self.code = random_code()
+
+        if increase_attempted_tries:
+            self.attempted_tries += 1
+            if increase_failures:
+                self.failures += 1
+
+        return self.captcha_object
 
     def cancel(self) -> None:
         """
         Cancel the challenge.
         """
-        if self._can_be_modified:
-            self._set_state(States.FAILURE, FailReason.CANCELLED)
-        else:
+        if not self._can_be_modified:
             raise TypeError("Challenge cannot be edited")
+
+        self._set_state(States.FAILURE, FailReason.CANCELLED)

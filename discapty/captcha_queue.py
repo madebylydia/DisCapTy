@@ -19,7 +19,7 @@ class CaptchaQueue:
 
     Parameters
     ----------
-    generators: typing.Union[Generator, typing.List[Generator]]
+    generators: Generator | typing.List[Generator]
         A list or a single generator to use for creating the challenges.
         If a list is given, a random generator will be picked up when using `create_challenge`.
 
@@ -37,7 +37,7 @@ class CaptchaQueue:
 
     def __init__(
         self,
-        generators: typing.Union[Generator, typing.List[Generator]],
+        generators: Generator | typing.List[Generator],
         *,
         queue: typing.Optional[typing.Dict[str, Challenge]] = None,
     ) -> None:
@@ -84,7 +84,7 @@ class CaptchaQueue:
         challenge = Challenge(
             random_generator,
             challenge_id,
-            retries=retries,
+            allowed_retries=retries,
             code=code,
             code_length=code_length,
         )
