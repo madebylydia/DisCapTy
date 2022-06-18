@@ -1,5 +1,6 @@
-Stable 2.0.0
-============
+# CHANGELOGS
+
+## Stable 2.0.0
 
 **This release present breaking changes. You're advised to read this changelog to know what to do in order to update
 your code.**
@@ -8,15 +9,16 @@ your code.**
 * Code has been fully rewritten.
 * You can now create your own generator.
 
-Stable 1.0.2
-============
+Please see the migration guide for more information on how to migrate: https://discapty.readthedocs.io/en/latest/source/migration.html
+
+## Stable 1.0.2
+
 This is a hotfix release, fixing typehinting & adding a much easier way to choose the Captcha's code length.
 
 * Typehinting for ``Author`` and ``Footer`` have been fixed.
 * You can now choose the Captcha's code length using ``code_length`` attribute when initializing your Captcha class.
 
-Stable 1.0.1
-============
+## Stable 1.0.1
 
 **This release present breaking changes. You're advised to read this changelog to know what to do in order to update
 your code.**
@@ -33,15 +35,15 @@ They are not meant to make the code faster but more easy to read and understand,
 * You can now customize the embed's image URL when generating embed.
 * ``discapty.Captcha.setup`` is now used to set advanced settings for captcha.
 
-Beta 0.4
-========
+## Beta 0.4
+
 * Developers can now add other fields (Author, title, etc...) in the embed when using ``Captcha.generate_embed``.
 
-Beta 0.3.2
-==========
+## Beta 0.3.2
+
 * Install requirements throughout pip
 * Fix a missing fonts file?
 
-Beta 0.3
-========
+## Beta 0.3
+
 * Initial commit, nothing much to say.
