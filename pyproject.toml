@@ -7,7 +7,7 @@ line_length = 99
 
 [tool.poetry]
 name = "discapty"
-version = "2.0rc1"
+version = "2.0rc2"
 description = "DisCapTy help you generate obfuscated images, leaving your code easy."
 authors = ["Predeactor <predeactor0@gmail.com>"]
 license = "MIT"
@@ -15,12 +15,23 @@ readme = "README.md"
 repository = "https://github.com/Predeactor/DisCapTy"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
-    "License :: OSI Approved :: MIT License",
+
     "Intended Audience :: Developers",
-    "Programming Language :: Python :: 3.8",
+    "Intended Audience :: End Users/Desktop",
+
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: Implementation :: CPython",
     "Operating System :: OS Independent",
+
     "Topic :: Multimedia :: Graphics",
-    "Topic :: Software Development :: Libraries :: Python Modules"
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+
+    "Typing :: Typed",
 ]
 
 [tool.poetry.dependencies]
@@ -35,8 +46,6 @@ sphinx-copybutton = {version = "^0.5.0", extras = ["docs"]}
 
 [tool.poetry.urls]
 homepage = "https://github.com/Predeactor/DisCapTy"
-repository = "https://github.com/Predeactor/DisCapTy"
-
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.19.0"

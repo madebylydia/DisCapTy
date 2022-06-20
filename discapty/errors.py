@@ -18,7 +18,7 @@ class InvalidFontError(Exception):
 
 class ChallengeCompletionError(Exception):
     """
-    Raised when a challenge has an issue regarding it's completion.
+    Raised when a challenge has an issue regarding its completion.
     """
 
 

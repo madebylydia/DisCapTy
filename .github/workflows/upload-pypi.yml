@@ -4,13 +4,8 @@ on:
     types: [published]
 
 jobs:
-  test:
-    name: Run tests
-    uses: ./.github/workflows/tests.yml
-
   pre-release:
     name: Prepare release
-    needs: test
     uses: ./.github/workflows/prepare-release.yml
 
   deploy:
@@ -22,12 +17,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    # Install Python
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.10'
 
     # Load the cached installation of Poetry
     - name: Load cached Poetry installation
@@ -41,26 +30,22 @@ jobs:
     - name: Install Poetry
       if: steps.cached-poetry.outputs.cache-hit != 'true'
       uses: snok/install-poetry@v1
-      with:
-        virtualenvs-create: true
-        virtualenvs-in-project: true
 
-    # Load cached venv
-    - name: Load cached venv
-      id: cached-poetry-dependencies
-      uses: actions/cache@v2
+    # Install Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
       with:
-        path: .venv
-        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+        python-version: '3.10'
+        cache: 'poetry'
 
     # Install external dependencies & DisCapTy
-    - name: Install dependencies
+    - name: Install dependencies and DisCapTy
       run: poetry install -n
 
     - name: Build package
       run: poetry build -n
 
-    - name: Build and publish
+    - name: Publish to PyPi
       run: |
         poetry config pypi-token.pypi "${{ secrets.PYPI_API_TOKEN }}"
-        poetry publish
+        poetry publish -n

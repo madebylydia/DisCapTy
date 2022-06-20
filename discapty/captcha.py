@@ -44,13 +44,13 @@ class Captcha:
     def __repr__(self) -> typing.Any:
         return f"<Captcha type={self.type}>"
 
-    def check(self, text: str, *, force_casing: bool = False, remove_space: bool = True) -> bool:
+    def check(self, text: str, *, force_casing: bool = False, remove_spaces: bool = True) -> bool:
         # Remove spaces if needed.
-        text = text.replace(" ", "") if remove_space else text
+        text = text.replace(" ", "") if remove_spaces else text
 
         # Lower the text if needed
-        text = text.lower() if force_casing else text
-        code = self.code.lower() if force_casing else self.code
+        text = text if force_casing else text.lower()
+        code = self.code if force_casing else self.code.lower()
 
         # Result of the check.
         return code == text

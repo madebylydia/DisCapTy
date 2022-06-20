@@ -98,13 +98,7 @@ class Generator(pydantic.BaseModel, metaclass=ABCMeta):
     def generate(self, text: str) -> typing.Any:
         """
         A method that needs to be implemented by the child class.
-        This method will return the Captcha that the user has requested. For example:
-
-        .. code-block:: python
-
-           class MyGenerator(Generator):
-               def generate(self, text: str) -> str:
-                   return '+'.join(text)
+        This method will return the Captcha that the user has requested. See class's docstring.
         """
         raise NotImplementedError()
 
@@ -324,7 +318,7 @@ class TextGenerator(Generator):
     A text-based Captcha generator.
     Most insecure, but it is the most tricky.
 
-    It add a specific separator between each character of the given text.
+    It adds a specific separator between each character of the given text.
     The default separator is an invisible space. (\\\\u200B)
     """
 
