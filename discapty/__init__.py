@@ -2,9 +2,6 @@
 #  See the LICENSE file included with the file for more information about this project's
 #   license.
 
-# noinspection PyUnresolvedReferences
-from pydantic.color import Color as Color
-
 from .captcha import Captcha as Captcha
 from .captcha_queue import CaptchaQueue as CaptchaQueue
 from .challenge import Challenge as Challenge

@@ -7,7 +7,12 @@ from enum import Enum
 from typing import Any, Optional
 
 from discapty.captcha import Captcha
-from discapty.errors import AlreadyCompletedError, AlreadyRunningError, TooManyRetriesError
+from discapty.errors import (
+    AlreadyCompletedError,
+    AlreadyRunningError,
+    ChallengeCompletionError,
+    TooManyRetriesError,
+)
 from discapty.generators import Generator
 from discapty.utils import random_code
 
@@ -56,13 +61,13 @@ class Challenge:
     generator : Generator
         The generator class to use.
         You cannot uses :py:obj:`discapty.generators.Generator`
-        directly, you must subclass it and implement the "generate" function first.
+        directly, you have to subclass it and implement the "generate" function first.
 
     challenge_id : Optional[int | str]
         The id of the challenge. Can be a string or an id.
         If none is supplied, a random `UUID`_ will be generated.
 
-    retries : Optional[int]
+    allowed_retries : Optional[int]
         The number of retries allowed. Defaults to 3.
 
     code : Optional[str]
@@ -96,10 +101,16 @@ class Challenge:
         self.attempted_tries: int = 0
 
         self.state: States = States.PENDING
-        self._fail_reason: Optional[FailReason] = None
+        self.fail_reason: Optional[FailReason] = None
 
         self.__last_captcha_class: Optional[Captcha] = None
         self.__last_code: Optional[str] = None
+
+    def __repr__(self) -> str:
+        return (
+            f"<Challenge id={self.challenge_id} state={self.state} "
+            "is_completed={self.is_completed}>"
+        )
 
     def _set_state(
         self,
@@ -201,9 +212,13 @@ class Challenge:
         :py:exc:`TooManyRetriesError`
             If the number of failures is greater than the number of retries allowed.
             In other words, the challenge has failed.
+        :py:exc:`ChallengeCompletionError`
+            If the challenge had a failure. Returns the failure's reason.
         """
         if self.state == States.FAILED:
             raise TooManyRetriesError(self.fail_reason)
+        if self.state == States.FAILURE:
+            raise ChallengeCompletionError(self.fail_reason)
         if self.state == States.COMPLETED:
             raise AlreadyCompletedError("Challenge already completed")
         if self.state == States.WAITING:
@@ -212,7 +227,9 @@ class Challenge:
         self._set_state(States.WAITING)
         return self.captcha_object
 
-    def check(self, answer: str, *, force_casing: bool = False, remove_space: bool = True) -> bool:
+    def check(
+        self, answer: str, *, force_casing: bool = False, remove_spaces: bool = True
+    ) -> bool:
         """
         Check an answer.
         This will always add +1 to `attempted_tries` and `failures` if necessary.
@@ -222,9 +239,9 @@ class Challenge:
         answer : str
             The answer to check against the Captcha's code.
         force_casing : bool
-            If True, the casing must be respected.
-        remove_space : bool
-            If True, spaces will be removed when checking the answer.
+            If True, the casing must be respected. Defaults to False.
+        remove_spaces : bool
+            If True, spaces will be removed when checking the answer. Defaults to True.
 
         Return
         ------
@@ -244,7 +261,7 @@ class Challenge:
 
         self.attempted_tries += 1
 
-        if not self.captcha.check(answer, force_casing=force_casing, remove_space=remove_space):
+        if not self.captcha.check(answer, force_casing=force_casing, remove_spaces=remove_spaces):
             # If wrong
             self.failures += 1
             if self.failures >= self.allowed_retries:
@@ -267,6 +284,9 @@ class Challenge:
         ----------
         increase_attempted_tries : bool
             If True, the attempted_tries counter will be increased.
+
+        increase_failures : bool
+            If True, the failures counter will be increased.
 
         Raises
         ------

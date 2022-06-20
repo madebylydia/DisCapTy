@@ -101,6 +101,26 @@ class TestChallenge(unittest.TestCase):
 
         self.assertTrue(challenge.check(challenge.code))
 
+    def test_casing_enforcement(self):
+        """
+        Ensure that the casing is respected.
+        """
+        challenge = Challenge(WheezyGenerator(), code="TEST")
+        challenge.begin()
+
+        self.assertFalse(challenge.check("test", force_casing=True))
+        self.assertTrue(challenge.check("test", force_casing=False))
+
+    def test_spaces_removal(self):
+        """
+        Ensure that spaces are removed if needed.
+        """
+        challenge = Challenge(WheezyGenerator(), code="TEST")
+        challenge.begin()
+
+        self.assertFalse(challenge.check("TEST ", remove_spaces=False))
+        self.assertTrue(challenge.check("TEST ", remove_spaces=True))
+
 
 if __name__ == "__main__":
     unittest.main()
