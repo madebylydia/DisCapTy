@@ -43,7 +43,7 @@ Along with the rewrite of the Captcha class, the ``.setup`` function has been re
 Added ``Challenge`` class
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The :py:obj:`discapty.Challenge` class is the new preferred way to create Captcha now. You can read more about challenges here: :ref:`Introduction to Challenges <intro_challenge>`
+The :py:obj:`discapty.Challenge` class is the new preferred way to create Captcha now. You can read more about challenges here: :ref:`Introduction to Challenges <intro_challenge>` - :ref:`Creating a Challenge <create_challenge>`
 
 To use ``Challenge`` rather than the old ``Captcha``, you can do these changes:
 

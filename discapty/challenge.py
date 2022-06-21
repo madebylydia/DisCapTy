@@ -56,6 +56,36 @@ class Challenge:
     It frees your mind from managing all the process of a captcha challenge, keeping
     your code short and easy.
 
+    .. py:property:: code
+        :type: str
+
+        The raw code of the Challenge.
+
+    .. py:property:: allowed_retries
+        :type: int
+
+        The number of allowed retries.
+
+    .. py:property:: failures
+        :type: int
+
+        The number of failures the user has realized.
+
+    .. py:property:: attempted_tries
+        :type: int
+
+        The number of tries the user has attempted. (Or how many time was ``.begin`` called)
+
+    .. py:property:: state
+        :type: discapty.States
+
+        The current state of the challenge.
+
+    .. py:property:: fail_reason
+        :type: str
+
+        The reason why the challenge has failed. Only filled if the state is failed or failure.
+
     Parameters
     ----------
     generator : Generator

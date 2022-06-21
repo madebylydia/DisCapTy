@@ -20,10 +20,12 @@ from discapty import __version__
 
 project = "DisCapTy"
 docs_copyright = "2022, Predeactor"
+copyright = docs_copyright
 author = "Predeactor"
 
 # The full version, including alpha/beta/rc tags
 release = __version__
+version = release
 
 
 # -- General configuration ---------------------------------------------------
@@ -57,4 +59,8 @@ html_static_path = ["_static"]
 html_theme_options = {
     "light_logo": "logo-dark.png",
     "dark_logo": "logo.png",
+}
+
+autodoc_default_options = {
+    "member-order": "bysource",
 }

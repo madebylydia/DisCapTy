@@ -58,7 +58,7 @@ You can access the states in :py:obj:`discapty.States`
 
 Subclasses of :py:obj:`discapty.Generator`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Any subclasses of :py:obj:`discapty.Generator` are considered to be `GENERATORS`. They can be used in `Challenges <discapty.Challenge>`, or directly, like this:
+Any subclasses of :py:obj:`discapty.Generator` are considered to be `GENERATORS`. They can be used in :py:obj:`Challenges <discapty.Challenge>`, or directly, like this:
 
 .. code-block:: python
 
@@ -81,6 +81,8 @@ A generator can have default arguments arguments. You can change them directly w
    send_image_to_user(captcha_object)
 
 Certain generators will requires you to give certain arguments. In the case of DisCapTy's builtin generators, they all have optional arguments.
+
+.. _create_challenge:
 
 Creating a Challenge
 --------------------
