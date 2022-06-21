@@ -43,8 +43,7 @@ class CaptchaQueue:
     ) -> None:
         self.generators: typing.List[Generator] = []
         if isinstance(generators, list):
-            for generator in generators:
-                self.generators.append(generator)
+            self.generators.extend(generators)
         else:
             self.generators.append(generators)
 
@@ -115,7 +114,7 @@ class CaptchaQueue:
             return self.queue[challenge_id]
         except KeyError as e:
             raise NonexistingChallengeError(
-                f"Challenge with id '{challenge_id}' does not exist."
+                f"Challenge with id '{challenge_id}' does not exist. Have you used an int?"
             ) from e
 
     def delete_challenge(self, challenge_id: str) -> None:
