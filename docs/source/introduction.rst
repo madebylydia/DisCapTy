@@ -107,7 +107,7 @@ From here you can send your `CAPTCHA OBJECT` to your user, and you can validate 
    is_valid_input = challenge.check(user_input)
 
 This is a basic example, and it is a `bad` one, because the ``.check`` function can raise :py:exc:`TooManyRetriesError <discapty.errors.TooManyRetriesError>` if ``.check`` has been used more than the ``retries`` attributes allows it.
-This ``retries`` attribute can be edited when creating the ``CHALLENGE CLASS``.
+The ``allowed_retries`` attribute can be edited when creating the `CHALLENGE CLASS`.
 
 If you do like a more complete example, check the following:
 
@@ -115,7 +115,7 @@ If you do like a more complete example, check the following:
 
    from discapty import Challenge, TextGenerator, TooManyRetriesError
 
-   challenge = Challenge(TextGenerator(), retries=3)
+   challenge = Challenge(TextGenerator(), allowed_retries=3)
 
    first_captcha = challenge.begin()
    send_to_user(first_captcha)
@@ -158,11 +158,11 @@ To use the queue, as always you just need to initialize it with one or more init
    # With multiple generators
    my_queue = CaptchaQueue([TextGenerator(), WheezyGenerator()])
 
-if you use multiple generators, this mean that one generator will be picked randomly when creating a ``CHALLENGE CLASS``.
+if you use multiple generators, this mean that one generator will be picked randomly when creating a `CHALLENGE CLASS`.
 
 .. warning::
 
-   This create inconsistency when generating ``CAPTCHA OBJECTS`` where you'll need to check in your code what kind of ``CAPTCHA OBJECT`` you receive, for example, you may send an image differently from a string.
+   This may create inconsistency when generating `CAPTCHA OBJECTS` where you'll need to check in your code what kind of `CAPTCHA OBJECT` you receive, for example, you may send an image differently from a string.
 
 After then, you can create a challenge by calling ``.create_challenge``:
 
