@@ -106,7 +106,7 @@ From here you can send your `CAPTCHA OBJECT` to your user, and you can validate 
 
    is_valid_input = challenge.check(user_input)
 
-This is a basic example, and it is a `bad` one, because the ``.check`` function can raise :py:exc:`TooManyRetriesError <discapty.errors.TooManyRetriesError>` if ``.check`` has been used more than the ``retries`` attributes allows it.
+This is a basic example, and it is a `bad` one, because the ``.check`` function can raise :py:exc:`TooManyRetriesError <discapty.errors.TooManyRetriesError>` if ``.check`` has been used more than the ``allowed_retries`` attributes allows it.
 The ``allowed_retries`` attribute can be edited when creating the `CHALLENGE CLASS`.
 
 If you do like a more complete example, check the following:
