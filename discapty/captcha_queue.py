@@ -26,7 +26,7 @@ class CaptchaQueue:
         You should be aware that inconsistency will occur this way, as if one generator can return
         a specific type and another one could return another kind of type.
 
-    queue: typing.Optional[typing.Dict[int, Challenge]]
+    queue: typing.Dict[str, Challenge]
         Import an existing queue. Shouldn't be required.
 
     Raises
