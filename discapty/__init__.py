@@ -13,4 +13,4 @@ from .generators import TextGenerator as TextGenerator
 from .generators import WheezyGenerator as WheezyGenerator
 
 # DisCapTy: Version 2.0 - Release Candidate 2
-__version__ = "2.0rc2"
+__version__ = "2.0"
