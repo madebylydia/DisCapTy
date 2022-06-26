@@ -303,7 +303,9 @@ class Challenge:
             self._set_state(States.COMPLETED)
             return True
 
-    def reload(self, *, increase_attempted_tries=True, increase_failures=False) -> Any:
+    def reload(
+        self, *, increase_attempted_tries: bool = True, increase_failures: bool = False
+    ) -> Any:
         """
         Reload the Challenge and its code.
 
@@ -340,6 +342,11 @@ class Challenge:
     def cancel(self) -> None:
         """
         Cancel the challenge.
+
+        Raises
+        ------
+        TypeError:
+            If the challenge cannot be edited.
         """
         if not self._can_be_modified:
             raise TypeError("Challenge cannot be edited")

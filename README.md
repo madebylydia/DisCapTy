@@ -31,7 +31,11 @@ To use DisCapTy, you need a Python version equal or greater to `3.10`.
 
 This project is dependant of [Poetry](https://python-poetry.org), a dependency management tool. You are most likely going to require this tool to correctly interact with the project & its dependencies, check out [Poetry's documentation](https://python-poetry.org/docs) for how to install it.
 
-After then, clone the repository & run `poetry install`
+To clone the repository: `git clone https://github.com/Predeactor/DisCapTy.git`
+
+To install dependencies: `poetry install`
+
+To run tests: `poetry run python -m unittest`
 
 ## Creating Captcha
 

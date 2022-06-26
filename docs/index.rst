@@ -61,5 +61,6 @@ Pages
     :titlesonly:
 
     source/introduction
+    source/builtin_generators
     source/api
     source/migration

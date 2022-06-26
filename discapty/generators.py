@@ -105,8 +105,8 @@ class Generator(pydantic.BaseModel, metaclass=ABCMeta):
 
 class WheezyGenerator(Generator):
     """
-    A wheezy image Captcha generator.
-    Comes with many customizable settings.
+    A wheezy image Captcha generator. Comes with many customizable settings.
+    Easier to read than Image.
 
     Example: https://imgur.com/a/l9V09PN
     """
@@ -168,7 +168,10 @@ class WheezyGenerator(Generator):
 
 class ImageGenerator(Generator):
     """
-    Create an image CAPTCHA.
+    An image Captcha generator. Comes with many customizable settings.
+    More harder than the Wheezy generator.
+
+    Example: https://imgur.com/a/wozYgW0
     """
 
     fonts: typing.Sequence[pydantic.FilePath | str] = DEFAULT_FONTS

@@ -45,6 +45,24 @@ class Captcha:
         return f"<Captcha type={self.type}>"
 
     def check(self, text: str, *, force_casing: bool = False, remove_spaces: bool = True) -> bool:
+        """
+        Check if a text is correct to the captcha code.
+
+        Parameters
+        ----------
+        text : str
+            The answer to check against the Captcha's code.
+        force_casing : bool
+            If True, the casing must be respected. Defaults to False.
+        remove_spaces : bool
+            If True, spaces will be removed when checking the answer. Defaults to True.
+
+        Return
+        ------
+        bool:
+            True if the answer is correct, False otherwise.
+
+        """
         # Remove spaces if needed.
         text = text.replace(" ", "") if remove_spaces else text
 
