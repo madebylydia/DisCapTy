@@ -1,5 +1,12 @@
 # CHANGELOGS
 
+## Stable 2.0.1
+
+**Stable 2.0 will be yanked after this update is released.**
+
+* Update internal dependencies
+* Correct wrong dependencies downloads when installing package
+
 ## Stable 2.0.0
 
 **This release present breaking changes. You're advised to read this changelog to know what to do in order to update
