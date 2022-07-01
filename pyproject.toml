@@ -7,7 +7,7 @@ line_length = 99
 
 [tool.poetry]
 name = "discapty"
-version = "2.0.1"
+version = "2.0.2"
 description = "DisCapTy help you generate obfuscated images, leaving your code easy."
 authors = ["Predeactor <predeactor0@gmail.com>"]
 license = "MIT"
@@ -35,7 +35,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.7"
 pillow = "^8.4.0"
 pydantic = "^1.9.1"
 
@@ -53,6 +53,7 @@ mypy = "^0.960"
 black = "^22.1.0"
 isort = "^5.10.1"
 tox = "^3.24.5"
+tox-gh-actions = "^2.9.1"
 
 [tool.poetry.extras]
 docs = ["furo", "Sphinx", "sphinx-copybutton"]

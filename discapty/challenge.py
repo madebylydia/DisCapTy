@@ -93,7 +93,7 @@ class Challenge:
         You cannot uses :py:obj:`discapty.generators.Generator`
         directly, you have to subclass it and implement the "generate" function first.
 
-    challenge_id : Optional[int | str]
+    challenge_id : Optional[str]
         The id of the challenge. Can be a string or an id.
         If none is supplied, a random `UUID`_ will be generated.
 

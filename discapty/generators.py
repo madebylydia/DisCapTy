@@ -174,7 +174,7 @@ class ImageGenerator(Generator):
     Example: https://imgur.com/a/wozYgW0
     """
 
-    fonts: typing.Sequence[pydantic.FilePath | str] = DEFAULT_FONTS
+    fonts: typing.Sequence[typing.Union[pydantic.FilePath, str]] = DEFAULT_FONTS
     fonts_size: typing.Tuple[int, ...] = (50,)
 
     background_color: Color = pydantic.Field(random_color(238, 255))
@@ -190,7 +190,7 @@ class ImageGenerator(Generator):
 
     @staticmethod
     def _fetch_truefonts(
-        fonts: typing.Sequence[pydantic.FilePath | str],
+        fonts: typing.Sequence[typing.Union[pydantic.FilePath, str]],
         fonts_sizes: typing.Tuple[int, ...],
     ) -> typing.Tuple[PIL.ImageFont.FreeTypeFont, ...]:
         return tuple(
@@ -325,7 +325,7 @@ class TextGenerator(Generator):
     The default separator is an invisible space. (\\\\u200B)
     """
 
-    separator: str | typing.List[str] = "\u200B"
+    separator: typing.Union[str, typing.List[str]] = "\u200B"
 
     def generate(self, text: str) -> str:
         if isinstance(self.separator, str):
