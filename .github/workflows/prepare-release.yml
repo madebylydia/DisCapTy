@@ -38,7 +38,7 @@ jobs:
 
     # Install requests manually
     - name: Install requests
-      run: pip install requests  # Pip is much more faster than Poetry
+      run: poetry run pip install requests  # Pip is much more faster than Poetry
 
     # Run the main script
     - name: Run script
