@@ -3,17 +3,14 @@ on:
   workflow_call:
   pull_request:
   push:
-    branches:
-      - 'main'
 
 jobs:
   test:
     strategy:
       matrix:
-        python-version: ['3.10']
+        python-version: ['3.10', '3.9', '3.8', '3.7']
 
     runs-on: ubuntu-latest
-
     name: Tox - v${{ matrix.python-version }}
 
     steps:
@@ -40,8 +37,8 @@ jobs:
           cache: 'poetry'
 
       - name: Install dependencies and DisCapTy
-        run: poetry install -n
+        run: pip install tox tox-gh-actions
 
       # Run DisCapTy's tests
       - name: Run tests
-        run: poetry run python -m unittest
+        run: poetry run tox

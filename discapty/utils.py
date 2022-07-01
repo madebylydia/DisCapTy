@@ -5,13 +5,13 @@
 from pathlib import Path
 from random import choices, randint
 from string import ascii_uppercase, digits
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from PIL.ImageColor import getrgb
 from PIL.ImageFont import truetype
 
 
-def check_fonts(*fonts: str | Path) -> Optional[List[str]]:
+def check_fonts(*fonts: Union[str, Path]) -> Optional[List[str]]:
     """Check the given fonts by loading them. If any of them fails, return their path.
 
     Returns
