@@ -1,5 +1,9 @@
 # CHANGELOGS
 
+## Stable 2.0.2
+
+* Support down to Python 3.7 and up to Python 3.10
+
 ## Stable 2.0.1
 
 **Stable 2.0 will be yanked after this update is released.**
