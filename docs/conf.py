@@ -64,3 +64,11 @@ html_theme_options = {
 autodoc_default_options = {
     "member-order": "bysource",
 }
+
+# -- Options for intersphinx extension ---------------------------------------
+
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+}
+
