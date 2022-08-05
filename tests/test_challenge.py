@@ -74,7 +74,7 @@ class TestChallenge(unittest.TestCase):
         self.assertIs(challenge.failures, 1)
         self.assertIs(challenge.state, States.COMPLETED)
 
-    def test_ensure_failures(self):
+    def test_ensure_failures(self):  # sourcery skip: class-extract-method
         """
         Ensure that the challenge raises an error if too many fails.
         """
@@ -118,8 +118,8 @@ class TestChallenge(unittest.TestCase):
         challenge = Challenge(WheezyGenerator(), code="TEST")
         challenge.begin()
 
-        self.assertFalse(challenge.check("TEST ", remove_spaces=False))
-        self.assertTrue(challenge.check("TEST ", remove_spaces=True))
+        self.assertFalse(challenge.check("TE ST", remove_spaces=False))
+        self.assertTrue(challenge.check("TE ST", remove_spaces=True))
 
 
 if __name__ == "__main__":

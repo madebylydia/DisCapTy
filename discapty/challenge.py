@@ -1,12 +1,9 @@
-#  Copyright (c) 2022​-present - Predeactor - Licensed under the MIT License.
-#  See the LICENSE file included with the file for more information about this project's
-#   license.
-
 import uuid
 from enum import Enum
-from typing import Any, Optional
+from typing import Generic, Optional
 
 from discapty.captcha import Captcha
+from discapty.constants import GeneratorReturnType
 from discapty.errors import (
     AlreadyCompletedError,
     AlreadyRunningError,
@@ -18,6 +15,10 @@ from discapty.utils import random_code
 
 
 class FailReason(Enum):
+    """
+    An enum with all possible reasons of failing the captcha.
+    """
+
     TOO_MANY_RETRIES = "Too many retries"
     CANCELLED = "Challenge has been cancelled"
 
@@ -43,7 +44,7 @@ class States(Enum):
     FAILURE = "Failure (Unexpected)"
 
 
-class Challenge:
+class Challenge(Generic[GeneratorReturnType]):
     """
     Representation of a challenge. A challenge represent the user's Captcha
     question-answer he must face.
@@ -56,65 +57,72 @@ class Challenge:
     It frees your mind from managing all the process of a captcha challenge, keeping
     your code short and easy.
 
-    .. py:property:: code
-        :type: str
-
-        The raw code of the Challenge.
-
-    .. py:property:: allowed_retries
-        :type: int
-
-        The number of allowed retries.
-
-    .. py:property:: failures
-        :type: int
-
-        The number of failures the user has realized.
-
-    .. py:property:: attempted_tries
-        :type: int
-
-        The number of tries the user has attempted. (Or how many time was ``.begin`` called)
-
-    .. py:property:: state
-        :type: discapty.States
-
-        The current state of the challenge.
-
-    .. py:property:: fail_reason
-        :type: str
-
-        The reason why the challenge has failed. Only filled if the state is failed or failure.
-
     Parameters
     ----------
-    generator : Generator
+    generator : Subclass of :py:class:`discapty.generators.Generator`
         The generator class to use.
-        You cannot uses :py:obj:`discapty.generators.Generator`
-        directly, you have to subclass it and implement the "generate" function first.
 
-    challenge_id : Optional[str]
+    challenge_id : Optional, :py:class:`str`
         The id of the challenge. Can be a string or an id.
-        If none is supplied, a random `UUID`_ will be generated.
+        If none is supplied, a random :py:func:`UUID <uuid.uuid4>` will be generated.
 
-    allowed_retries : Optional[int]
+    allowed_retries : Optional, :py:class:`int`
         The number of retries allowed. Defaults to 3.
 
-    code : Optional[str]
+    code : Optional, :py:class:`str`
         The code to use. If none is supplied, a random code will be generated.
 
-    code_length : int
+    code_length : Optional, :py:class:`int`
         The length of the code to generate if no code is supplied. Defaults to 4.
 
 
     .. versionadded:: 2.0.0
 
-    .. _UUID: https://docs.python.org/3/library/uuid.html#uuid.uuid4
+    .. versionchanged:: 2.1.0
+
+       This class is now a generic class and requires to indicate which type it will receive.
+       (If necessary)
+       If the type is not especially indicated in your variable, it should be automatically done.
     """
+
+    generator: Generator[GeneratorReturnType]
+    """
+    The generator used with this challenge.
+    """
+    code: str
+    """
+    The clear code.
+    """
+    challenge_id: str
+    """
+    The ID of this challenge.
+    """
+    allowed_retries: int
+    """
+    The total allowed retried of this challenge.
+    """
+    failures: int
+    """
+    The total failures since this challenge has been created.
+    """
+    attempted_tries: int
+    """
+    The total attempted tried since this challenge has been created.
+    """
+    state: States
+    """
+    The actual state of the challenge.
+    """
+    fail_reason: Optional[str]
+    """
+    The fail reason, if applicable.
+    """
+    __last_captcha_class: Optional[Captcha[GeneratorReturnType]]
+    __last_code: Optional[str]
 
     def __init__(
         self,
-        generator: Generator,
+        generator: Generator[GeneratorReturnType],
         challenge_id: Optional[str] = None,
         *,
         allowed_retries: Optional[int] = None,
@@ -123,18 +131,18 @@ class Challenge:
     ) -> None:
         self.generator = generator
 
-        self.code: str = code or random_code(code_length)
-        self.challenge_id: str = str(challenge_id or uuid.uuid4())
+        self.code = code or random_code(code_length)
+        self.challenge_id = str(challenge_id or uuid.uuid4())
 
-        self.allowed_retries: int = allowed_retries or 3
-        self.failures: int = 0
-        self.attempted_tries: int = 0
+        self.allowed_retries = allowed_retries or 3
+        self.failures = 0
+        self.attempted_tries = 0
 
-        self.state: States = States.PENDING
-        self.fail_reason: Optional[FailReason] = None
+        self.state = States.PENDING
+        self.fail_reason = None
 
-        self.__last_captcha_class: Optional[Captcha] = None
-        self.__last_code: Optional[str] = None
+        self.__last_captcha_class = None
+        self.__last_code = None
 
     def __repr__(self) -> str:
         return (
@@ -146,10 +154,7 @@ class Challenge:
         self,
         state: States,
         fail_reason: Optional[FailReason] = None,
-    ):
-        """
-        Set challenge's internal state.
-        """
+    ) -> None:
         self.state = state
         if (
             self.state
@@ -159,24 +164,16 @@ class Challenge:
             )
             and fail_reason
         ):
-            self.fail_reason = FailReason(fail_reason).value
+            self.fail_reason = fail_reason.value
 
     @property
     def _can_be_modified(self) -> bool:
-        """
-        Check if the challenge can be modified.
-        """
         return self.state in (
             States.PENDING,
             States.WAITING,
         )
 
-    def _create_captcha(self) -> Captcha:
-        """
-        Create a new Captcha object.
-
-        This will return a cached Captcha if the code hasn't changed.
-        """
+    def _create_captcha(self) -> Captcha[GeneratorReturnType]:
         if not self.__last_captcha_class or (self.code != self.__last_code):
             generated_captcha = self.generator.generate(self.code)
             self.__last_captcha_class = Captcha(self.code, generated_captcha)
@@ -184,21 +181,26 @@ class Challenge:
         return self.__last_captcha_class
 
     @property
-    def captcha_object(self) -> Any:
+    def captcha_object(self) -> GeneratorReturnType:
         """
         Get the Captcha object.
 
         Returns
         -------
-        :py:obj:`typing.Any`
+        :py:attr:`discapty.constants.GeneratorReturnType` :
             The Captcha object.
         """
         return self.captcha.captcha_object
 
     @property
-    def captcha(self) -> Captcha:
+    def captcha(self) -> Captcha[GeneratorReturnType]:
         """
-        Returns the Captcha class associated to this challenge.
+        The Captcha class associated to this challenge.
+
+        Returns
+        -------
+        :py:class:`discapty.captcha.Captcha` :
+            The Captcha class.
         """
         return self._create_captcha()
 
@@ -206,6 +208,11 @@ class Challenge:
     def is_completed(self) -> bool:
         """
         Check if the challenge has been completed or failed.
+
+        Returns
+        -------
+        :py:class:`bool` :
+            If the challenge has been completed or failed.
         """
         return self.state in (States.COMPLETED, States.FAILED)
 
@@ -213,6 +220,11 @@ class Challenge:
     def is_correct(self) -> Optional[bool]:
         """
         Check if the challenge has been completed. If not, return None. If failed, return False.
+
+        Returns
+        -------
+        Optional, :py:class:`bool` :
+            If the challenge has been completed with success. If not, return False. If not completed, return None.
         """
         return self.state == States.COMPLETED if self.is_completed else None
 
@@ -220,35 +232,47 @@ class Challenge:
     def is_wrong(self) -> Optional[bool]:
         """
         Check if the challenge has been failed. If not, return None. If completed, return False.
-        """
-        return self.state == States.FAILED if self.is_completed else None
-
-    def begin(self) -> Any:
-        """
-        Start the challenge.
 
         Returns
         -------
-        Captcha
-            The Captcha object to send to the user.
+        Optional, :py:class:`bool` :
+            If the challenge has been failed. If not, return False. If not completed, return None.
+
+        """
+        return self.state == States.FAILED if self.is_completed else None
+
+    def begin(self) -> GeneratorReturnType:
+        """
+        Begins the challenge.
 
         Raises
         ------
-        :py:exc:`AlreadyCompletedError`
+        :py:exc:`AlreadyCompletedError` :
             If the challenge has already been completed. You cannot start a challenge twice,
             you need to create a new one.
-        :py:exc:`AlreadyRunningError`
+        :py:exc:`AlreadyRunningError` :
             If the challenge is already running.
-        :py:exc:`TooManyRetriesError`
+        :py:exc:`TooManyRetriesError` :
             If the number of failures is greater than the number of retries allowed.
             In other words, the challenge has failed.
-        :py:exc:`ChallengeCompletionError`
+        :py:exc:`ChallengeCompletionError` :
             If the challenge had a failure. Returns the failure's reason.
+
+        Returns
+        -------
+        The Captcha object to send to the user.
+
+
+        .. versionchanged:: 2.1.0
+
+           The return type will now be dynamically acquired and adapt to the given generator.
         """
         if self.state == States.FAILED:
-            raise TooManyRetriesError(self.fail_reason)
+            reason = self.fail_reason or "Failed (No failed reason)"
+            raise TooManyRetriesError(reason)
         if self.state == States.FAILURE:
-            raise ChallengeCompletionError(self.fail_reason)
+            reason = self.fail_reason or "Failure (No failure reason)"
+            raise ChallengeCompletionError(reason)
         if self.state == States.COMPLETED:
             raise AlreadyCompletedError("Challenge already completed")
         if self.state == States.WAITING:
@@ -266,25 +290,25 @@ class Challenge:
 
         Parameters
         ----------
-        answer : str
+        answer : :py:class:`str`
             The answer to check against the Captcha's code.
-        force_casing : bool
+        force_casing : :py:class:`bool`
             If True, the casing must be respected. Defaults to False.
-        remove_spaces : bool
+        remove_spaces : :py:class:`bool`
             If True, spaces will be removed when checking the answer. Defaults to True.
-
-        Return
-        ------
-        bool:
-            True if the answer is correct, False otherwise.
 
         Raises
         ------
-        :py:exc:`TooManyRetriesError`
+        :py:exc:`TooManyRetriesError` :
             If the number of failures is greater than the number of retries allowed.
             We are still adding +1 to the failure even when raising the exception.
-        :py:exc:`TypeError`
+        :py:exc:`TypeError` :
             The challenge cannot be edited (State is either not PENDING or not WAITING)
+
+        Return
+        ------
+        :py:class:`bool` :
+            True if the answer is correct, False otherwise.
         """
         if not self._can_be_modified:
             raise TypeError("Challenge cannot be edited")
@@ -305,25 +329,35 @@ class Challenge:
 
     def reload(
         self, *, increase_attempted_tries: bool = True, increase_failures: bool = False
-    ) -> Any:
+    ) -> GeneratorReturnType:
         """
         Reload the Challenge and its code.
 
-        This method will create a new random code. It will also increase the attempted_tries
-        counter if requested. By defaults, this behavior is executed.
+        This method will create a new random code + captcha object. It will also increase the
+        attempted_tries counter if requested. By defaults, this behavior is executed.
 
         Parameters
         ----------
-        increase_attempted_tries : bool
+        increase_attempted_tries : :py:class:`bool`
             If True, the attempted_tries counter will be increased.
 
-        increase_failures : bool
+        increase_failures : :py:class:`bool`
             If True, the failures counter will be increased.
 
         Raises
         ------
-        TypeError
+        :py:exc:`TypeError` :
             If the challenge cannot be edited or is not already running.
+
+        Returns
+        -------
+        :py:attr:`discapty.constants.GeneratorReturnType` :
+            The Captcha object to send to the user.
+
+
+        .. versionchanged:: 2.1.0
+           The return type will now be dynamically acquired and adapt to the given generator.
+
         """
         if not self._can_be_modified:
             raise TypeError("Challenge cannot be edited")
@@ -345,7 +379,7 @@ class Challenge:
 
         Raises
         ------
-        TypeError:
+        :py:exc:`TypeError` :
             If the challenge cannot be edited.
         """
         if not self._can_be_modified:

@@ -22,7 +22,7 @@ class TestGenerator(unittest.TestCase):
         Attempt to create a generator well-built with the correct parameters.
         """
 
-        class MyGen(Generator):
+        class MyGen(Generator[str]):
             sep: str = "-"
 
             def generate(self, text: str):
@@ -63,11 +63,11 @@ class TestWheezyGenerator(unittest.TestCase):
             fonts_size=(50,),
             width=300,
             height=125,
-            background_color="#EEEECC",
-            text_color="#5C87B2",
+            background_color="#EEEECC",  # type: ignore
+            text_color="#5C87B2",  # type: ignore
             text_squeeze_factor=0.8,
             noise_number=30,
-            noise_color="#EEEECC",
+            noise_color="#EEEECC",  # type: ignore
             noise_level=2,
         )
         result = gen.generate("TEST")
@@ -84,8 +84,8 @@ class TestImageGenerator(unittest.TestCase):
             fonts_size=(50,),
             width=300,
             height=125,
-            background_color="#EEEECC",
-            text_color="#5C87B2",
+            background_color="#EEEECC",  # type: ignore
+            text_color="#5C87B2",  # type: ignore
             number_of_curves=2,
             number_of_dots=2,
             width_of_dots=2,

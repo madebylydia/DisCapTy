@@ -1,10 +1,6 @@
-#  Copyright (c) 2022​-present - Predeactor - Licensed under the MIT License.
-#  See the LICENSE file included with the file for more information about this project's
-#   license.
-
 import pathlib
 import typing
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from os import listdir
 from os.path import abspath, dirname, isfile, join
 from random import choice, randint, random, uniform
@@ -17,15 +13,16 @@ import PIL.ImageFont
 import pydantic
 from pydantic.color import Color
 
+from discapty.constants import GeneratorReturnType
 from discapty.utils import random_color
 
 from .wheezylib import image as wheezy_captcha
 
-PATH = join(abspath(dirname(__file__)), "fonts")
-DEFAULT_FONTS = [join(PATH, f) for f in listdir(PATH) if isfile(join(PATH, f))]
+PATH: str = join(abspath(dirname(__file__)), "fonts")
+DEFAULT_FONTS: typing.List[str] = [join(PATH, f) for f in listdir(PATH) if isfile(join(PATH, f))]
 
 
-class Generator(pydantic.BaseModel, metaclass=ABCMeta):
+class Generator(ABC, pydantic.BaseModel, typing.Generic[GeneratorReturnType]):
     """
     Base class for all generators.
 
@@ -34,7 +31,7 @@ class Generator(pydantic.BaseModel, metaclass=ABCMeta):
 
     .. code-block:: python
 
-       class MyGenerator(Generator):
+       class MyGenerator(Generator[str]):
            def generate(self, text: str) -> str:
                return "+".join(text)
 
@@ -44,7 +41,7 @@ class Generator(pydantic.BaseModel, metaclass=ABCMeta):
 
     .. code-block:: python
 
-       class MyGenerator(Generator):
+       class MyGenerator(Generator[str]):
            separator = "+"
 
            def generate(self, text: str) -> str:
@@ -60,7 +57,7 @@ class Generator(pydantic.BaseModel, metaclass=ABCMeta):
 
     .. code-block:: python
 
-       class MyGenerator(Generator):
+       class MyGenerator(Generator[str]):
            separator: str = ...
 
            ...
@@ -74,36 +71,60 @@ class Generator(pydantic.BaseModel, metaclass=ABCMeta):
     https://pydantic-docs.helpmanual.io/
 
     .. versionadded:: 2.0.0
+
+    .. versionchanged:: 2.1.0
+
+       This class is now a generic class, taking as the parameter the type output of ".generate".
     """
 
     class Config:
+        """
+        :meta private:
+        legit no one cares about this class
+        """
+
         validate_all = True
         validate_assignment = True
 
     @property
     def required_keys(self) -> typing.List[str]:
         """
-        Returns a list of all child's required keys.
+        List of all child's required keys.
+
+        Returns
+        -------
+        List of :py:class:`str` :
+            The list of required keys.
         """
         return [key for key, value in self.__fields__.items() if value.required]
 
     @property
     def optional_keys(self) -> typing.List[str]:
         """
-        Returns a list of all child's optional keys.
+        List of all child's optional keys.
+
+        Returns
+        -------
+        List of :py:class:`str` :
+            The list of optional keys.
         """
         return [key for key, value in self.__fields__.items() if not value.required]
 
     @abstractmethod
-    def generate(self, text: str) -> typing.Any:
+    def generate(self, text: str) -> GeneratorReturnType:
         """
         A method that needs to be implemented by the child class.
         This method will return the Captcha that the user has requested. See class's docstring.
+
+        Parameters
+        ----------
+        text : :py:class:`str`
+            The text to generate the captcha with.
         """
         raise NotImplementedError()
 
 
-class WheezyGenerator(Generator):
+class WheezyGenerator(Generator[PIL.Image.Image]):
     """
     A wheezy image Captcha generator. Comes with many customizable settings.
     Easier to read than Image.
@@ -115,11 +136,11 @@ class WheezyGenerator(Generator):
     fonts_size: typing.Tuple[int, ...] = (50,)
     width: int = 300
     height: int = 125
-    background_color: Color = "#EEEECC"
-    text_color: Color = "#5C87B2"
+    background_color: Color = "#EEEECC"  # type: ignore
+    text_color: Color = "#5C87B2"  # type: ignore
     text_squeeze_factor: float = 0.8
     noise_number: int = 30
-    noise_color: Color = "#EEEECC"
+    noise_color: Color = "#EEEECC"  # type: ignore
     noise_level: int = 2
 
     @pydantic.validator("fonts_size")
@@ -133,6 +154,16 @@ class WheezyGenerator(Generator):
     def generate(self, text: str) -> PIL.Image.Image:
         """
         Generate a wheezy image. See https://imgur.com/a/l9V09PN.
+
+        Parameters
+        ----------
+        text: :py:class:`str`
+            The text to generate the captcha with.
+
+        Returns
+        -------
+        :py:class:`PIL.Image.Image` :
+            The captcha image.
         """
         fonts: typing.List[str] = [
             font if isinstance(font, str) else font.absolute().as_posix() for font in self.fonts
@@ -166,7 +197,7 @@ class WheezyGenerator(Generator):
         return fn(text)
 
 
-class ImageGenerator(Generator):
+class ImageGenerator(Generator[PIL.Image.Image]):
     """
     An image Captcha generator. Comes with many customizable settings.
     More harder than the Wheezy generator.
@@ -288,7 +319,7 @@ class ImageGenerator(Generator):
                 images.append(_draw_character(" "))
             images.append(_draw_character(c))
 
-        text_width = sum([im.size[0] for im in images])
+        text_width = sum(im.size[0] for im in images)
 
         width = max(text_width, self.width)
         image = image.resize((width, self.height))
@@ -308,7 +339,19 @@ class ImageGenerator(Generator):
         return image
 
     def generate(self, text: str) -> PIL.Image.Image:
-        """Generate a Captcha image. See x"""
+        """
+        Generate a Captcha image. See https://imgur.com/a/wozYgW0
+
+        Parameters
+        ----------
+        text: :py:class:`str`
+            The text to generate the captcha with.
+
+        Returns
+        -------
+        :py:class:`PIL.Image.Image`
+            The captcha image.
+        """
         im = self.create_captcha_image(chars=text)
         self.create_noise_dots(im, self.text_color, self.width_of_dots, self.number_of_dots)
         self.create_noise_curve(im, self.text_color, self.number_of_curves)
@@ -316,7 +359,7 @@ class ImageGenerator(Generator):
         return im
 
 
-class TextGenerator(Generator):
+class TextGenerator(Generator[str]):
     """
     A text-based Captcha generator.
     Most insecure, but it is the most tricky.
@@ -328,6 +371,19 @@ class TextGenerator(Generator):
     separator: typing.Union[str, typing.List[str]] = "\u200B"
 
     def generate(self, text: str) -> str:
+        """
+        Generate a Captcha text.
+
+        Parameters
+        ----------
+        text: :py:class:`str`
+            The text to generate the captcha with.
+
+        Returns
+        -------
+        :py:class:`str` :
+            The captcha text.
+        """
         if isinstance(self.separator, str):
             return self.separator.join(text)
         new_string: str = ""
