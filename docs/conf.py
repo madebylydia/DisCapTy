@@ -10,18 +10,19 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath("../"))
 
 from discapty import __version__
 
 # -- Project information -----------------------------------------------------
 
 project = "DisCapTy"
-docs_copyright = "2022, Predeactor"
-copyright = docs_copyright
 author = "Predeactor"
+docs_copyright = f"2022-present, {author}"
+copyright = docs_copyright
 
 # The full version, including alpha/beta/rc tags
 release = __version__
@@ -33,7 +34,12 @@ version = release
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.napoleon", "sphinx.ext.autodoc", "sphinx.ext.intersphinx", "sphinx_copybutton"]
+extensions = [
+    "sphinx.ext.napoleon",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx_copybutton",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -70,5 +76,5 @@ autodoc_default_options = {
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
+    "pillow": ("https://pillow.readthedocs.io/en/stable/", None),
 }
-
