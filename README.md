@@ -2,7 +2,7 @@
 
 ![DisCapTy's Logo](.github/logo.png#gh-dark-mode-only)![DisCapTy's Logo](.github/logo-dark.png#gh-light-mode-only)
 
-DisCapTy is a highly-type hinted Python module to generate Captcha images without struggling your mind on how to make your own. Everyone can use it!
+DisCapTy is a highly type hinted Python module to generate Captcha images without struggling your mind on how to make your own. Everyone can use it!
 
 **Documentation:** <https://discapty.readthedocs.io/>
 

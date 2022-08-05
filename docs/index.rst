@@ -14,7 +14,7 @@ DisCapTy is a highly type hinted Python module to generate Captcha images & chal
 
 * Highly customizable Captcha generation / Hackable
 * Developer & user friendly
-* Highly type hinting
+* Highly type hinted
 * Extendable with your own/third-party generators
 
 Installation
