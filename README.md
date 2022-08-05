@@ -25,7 +25,7 @@ DisCapTy is available on PyPi!
 pip3 install discapty
 ```
 
-To use DisCapTy, you need a Python version equal or greater to `3.10`.
+To use DisCapTy, you need a Python version equal or greater to `3.7` and below `3.11`.
 
 ## Clone & Test the project
 
