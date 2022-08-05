@@ -7,7 +7,7 @@ Migration Guide
 From 2.0.x to 2.1.0
 ===================
 
-DisCapTy 2.1.0 has been released around the beginning august to resolve one major problem of DisCapTy 2.0.x: Type hinting in :py:class:`discapty.generators.Generator`, :py:class:`discapty.Captcha`, :py:class:`discapty.Challenge` and :py:class:`discapty.CaptchaQueue`.
+DisCapTy 2.1.0 has been released around the beginning august to resolve one major problem of DisCapTy 2.0.x: Type hinting in :py:class:`discapty.captcha.Captcha`, :py:class:`discapty.challenge.Challenge` and :py:class:`discapty.captcha_queue.CaptchaQueue`.
 These classes, when returning a captcha object, would give the :py:data:`typing.Any`, which is vague - it actually doesn't tell the developer what type could the captcha object be.
 
 To resolve this issue, generics classes were implemented into needed classes and will now take the type hint from generators to mirror them into methods who return captcha objects.
