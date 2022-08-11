@@ -1,12 +1,13 @@
 import unittest
 
 import discapty
-from discapty import CaptchaQueue, Challenge, TextGenerator
+from discapty import CaptchaQueue, Challenge
+from discapty.generators import TextGenerator
 
 
 class TestCaptchaQueue(unittest.TestCase):
     def setUp(self) -> None:
-        self.queue: CaptchaQueue = CaptchaQueue([TextGenerator()])
+        self.queue = CaptchaQueue(TextGenerator())
 
     def test_create_queue_with_missing_gen(self):
         """

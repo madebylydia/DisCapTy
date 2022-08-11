@@ -1,17 +1,23 @@
 # CHANGELOGS
 
+## Stable 2.1.0
+
+**This release present important changes for generators. You're advised to read the migration guide to know what to do in order to update your code.**
+
+* `discapty.Challenge`, `discapty.Captcha` and `discapty.CaptchaQueue` are now typed using TypeVar and type safe. They inherit their type hint from the generator.
+
 ## Stable 2.0.2
 
 * Support down to Python 3.7 and up to Python 3.10
 
 ## Stable 2.0.1
 
-**Stable 2.0 will be yanked after this update is released.**
+**Version "Stable 2.0" will be yanked after this update is released.**
 
 * Update internal dependencies
 * Correct wrong dependencies downloads when installing package
 
-## Stable 2.0.0
+## Stable 2.0
 
 **This release present breaking changes. You're advised to read this changelog to know what to do in order to update
 your code.**
@@ -20,7 +26,7 @@ your code.**
 * Code has been fully rewritten.
 * You can now create your own generator.
 
-Please see the migration guide for more information on how to migrate: https://discapty.readthedocs.io/en/latest/source/migration.html
+Please see the migration guide for more information on how to migrate: <https://discapty.readthedocs.io/en/latest/source/migration.html>
 
 ## Stable 1.0.2
 

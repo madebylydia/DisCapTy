@@ -7,7 +7,7 @@ line_length = 99
 
 [tool.poetry]
 name = "discapty"
-version = "2.0.2"
+version = "2.1.0"
 description = "DisCapTy help you generate obfuscated images, leaving your code easy."
 authors = ["Predeactor <predeactor0@gmail.com>"]
 license = "MIT"

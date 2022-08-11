@@ -2,7 +2,7 @@
 
 ![DisCapTy's Logo](.github/logo.png#gh-dark-mode-only)![DisCapTy's Logo](.github/logo-dark.png#gh-light-mode-only)
 
-DisCaPty is a Python module to generate Captcha images without struggling your mind on how to make your own. Everyone can use it!
+DisCapTy is a highly type hinted Python module to generate Captcha images without struggling your mind on how to make your own. Everyone can use it!
 
 **Documentation:** <https://discapty.readthedocs.io/>
 
@@ -19,13 +19,13 @@ DisCaPty is a Python module to generate Captcha images without struggling your m
 
 ## Installing
 
-DisCaPty is available on PyPi!
+DisCapTy is available on PyPi!
 
 ```sh
 pip3 install discapty
 ```
 
-To use DisCapTy, you need a Python version equal or greater to `3.10`.
+To use DisCapTy, you need a Python version equal or greater to `3.7` and below `3.11`.
 
 ## Clone & Test the project
 

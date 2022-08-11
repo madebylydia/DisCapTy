@@ -1,7 +1,3 @@
-#  Copyright (c) 2022​-present - Predeactor - Licensed under the MIT License.
-#  See the LICENSE file included with the file for more information about this project's
-#   license.
-
 from pathlib import Path
 from random import choices, randint
 from string import ascii_uppercase, digits
@@ -14,9 +10,14 @@ from PIL.ImageFont import truetype
 def check_fonts(*fonts: Union[str, Path]) -> Optional[List[str]]:
     """Check the given fonts by loading them. If any of them fails, return their path.
 
+    Parameters
+    ----------
+    fonts : :py:class:`str` or :py:class:`pathlib.Path`
+        The list of fonts to check.
+
     Returns
     -------
-    List[str] - Optional
+    Optional, list of :py:class:`str` :
         A list of path of the non-loadable font, if any.
     """
     failures: List[str] = []
@@ -27,31 +28,31 @@ def check_fonts(*fonts: Union[str, Path]) -> Optional[List[str]]:
             truetype(font)
         except OSError:
             failures.append(font)
-    if failures:
-        return failures
-    # NoReturn
+    return failures or None
 
 
 def random_color(start: int = 0, end: int = 255, opacity: int = 0) -> str:
+    # sourcery skip: comprehension-to-generator, invert-any-all
+    # Incorrect suggestion
     """Returns a random color in hexadecimal format.
 
     Parameters
     ----------
-    start : int, optional
+    start : Optional, :py:class:`int`
         The starting number of the color, must be contained between 0 and 255, by default 0
-    end : int, optional
+    end : Optional, :py:class:`int`
         The ending number of the color, must be contained between 0 and 255, by default 255
-    opacity : int, optional
+    opacity : Optional, :py:class:`int`
         The color's opacity, by default 0
 
     Returns
     -------
-    str
+    :py:class:`str` :
         The hexadecimal color.
 
     Raises
     ------
-    ValueError
+    :py:exc:`ValueError` :
         If any of `start`, `end` or `opacity` is not contained between 0 and 255.
     """
     if not all([0 <= attribute <= 255 for attribute in (start, end, opacity)]):
@@ -65,9 +66,19 @@ def random_color(start: int = 0, end: int = 255, opacity: int = 0) -> str:
     return "#%02X%02X%02X%02X" % (rc(), rc(), rc(), opacity)
 
 
-def random_code(characters_length: Optional[int] = None):
+def random_code(characters_length: Optional[int] = None) -> str:
     """
     Return a random code with the needed length.
+
+    Parameters
+    ----------
+    characters_length : Optional, :py:class:`int`
+        The length of the returned code.
+
+    Returns
+    -------
+    :py:class:`str` :
+        The random code.
     """
     return "".join(choices(ascii_uppercase + digits, k=characters_length or 4))
 
@@ -75,8 +86,19 @@ def random_code(characters_length: Optional[int] = None):
 def validate_str_to_hex(color: str) -> bool:
     """
     Validate a string to be a valid hexadecimal color.
+
+    Parameters
+    ----------
+    color : :py:class:`str`:
+        The string to validate.
+
+    Returns
+    -------
+    :py:class:`bool` :
+        If the color is hexadecimal or not.
     """
     if not color:
+        # Empty string
         return False
     try:
         getrgb(color)

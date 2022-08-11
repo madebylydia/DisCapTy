@@ -26,8 +26,8 @@ The word we will define here will be reference in uppercase and italic through t
 
    It is generally thrown away after being completed, or failed.
 
-#. ``CAPTCHA CLASS``: Refers to the :py:obj:`discapty.Captcha` class.
-#. ``CHALLENGE CLASS``: Refers to the :py:obj:`discapty.Challenge` class.
+#. ``CAPTCHA CLASS``: Refers to the :py:obj:`discapty.captcha.Captcha` class.
+#. ``CHALLENGE CLASS``: Refers to the :py:obj:`discapty.challenge.Challenge` class.
 
 Objects of DisCapTy
 -------------------
@@ -35,8 +35,8 @@ Objects of DisCapTy
 Assuming you're reading this guide because this is the first time you're interacting with DisCapTy, you may need to understand what objects will DisCapTy serves you.
 This is important because if your codebase doesn't understand what you are using, you might find yourself into a mess that is not a captcha. 🤔
 
-:py:obj:`discapty.Captcha`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+:py:obj:`discapty.captcha.Captcha`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 A `CAPTCHA CLASS` contain the `RAW CODE` and it's `CAPTCHA OBJECT` in the same place.
 It is where you can check for user's input directly using the ``.check`` function.
 
@@ -46,19 +46,19 @@ It is where you can check for user's input directly using the ``.check`` functio
 
 .. _intro_challenge:
 
-:py:obj:`discapty.Challenge`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+:py:obj:`discapty.challenge.Challenge`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The `CHALLENGE CLASS` is the DisCapTy's implementation of a `CHALLENGE`.
 With the `CHALLENGE CLASS`, you are able to generate the captcha, verify's user input, set a defined limit of retries, use a custom `CODE`, etc...
 
 The `CHALLENGE CLASS` has different states, as stated in `CHALLENGE`. If the challenge state's is either ``FAILED``, ``FAILURE`` or ``COMPLETED``, it cannot be edited.
 While properties are writable, you're advised to not touch them manually.
 
-You can access the states in :py:obj:`discapty.States`
+You can access the states in :py:obj:`discapty.challenge.States`
 
-Subclasses of :py:obj:`discapty.Generator`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Any subclasses of :py:obj:`discapty.Generator` are considered to be `GENERATORS`. They can be used in :py:obj:`Challenges <discapty.Challenge>`, or directly, like this:
+Subclasses of :py:obj:`discapty.generators.Generator`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Any subclasses of :py:obj:`discapty.generators.Generator` are considered to be `GENERATORS`. They can be used in :py:obj:`Challenges <discapty.challenge.Challenge>`, or directly, like this:
 
 .. code-block:: python
 
@@ -144,7 +144,7 @@ Creating a Captcha queue
 ------------------------
 
 The DisCapTy's Captcha queue permit the developers to store many `CHALLENGE CLASS` in one place, it takes cares of managing all of them.
-Putting in place the Captcha queue is fairly easy. The Captcha queue will always give an ID to a challenge, if you don't pass one, an `UUID <ps://docs.python.org/3/library/uuid.html#uuid.uuid4>`_ will be generated for you.
+Putting in place the Captcha queue is fairly easy. The Captcha queue will always give an ID to a challenge, if you don't pass one, an :py:func:`UUID <uuid.uuid4>` will be generated for you.
 
 To use the queue, as always you just need to initialize it with one or more initialized generator(s):
 

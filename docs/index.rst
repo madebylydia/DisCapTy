@@ -8,12 +8,13 @@ Welcome to DisCapTy's documentation!
 .. image:: _static/logo-dark.png
    :class: only-light
 
-DisCaPty is a Python module to generate Captcha images & challenges without struggling your mind on how to make your own.
+DisCapTy is a highly type hinted Python module to generate Captcha images & challenges without struggling your mind on how to make your own.
 
 **Features:**
 
 * Highly customizable Captcha generation / Hackable
 * Developer & user friendly
+* Highly type hinted
 * Extendable with your own/third-party generators
 
 Installation
@@ -39,7 +40,7 @@ Example
    from discapty import Challenge, ImageGenerator, TooManyRetriesError
 
    challenge = Challenge(ImageGenerator(width=500, height=250, fonts=["./my-fonts.ttf"]), allowed_retries=5)
-   captcha = challenge.begin()
+   captcha = challenge.begin()  # Thank to DisCapTy's typehint, we know we're getting an image here!
    send_captcha_to_user(captcha)
 
    user_input = get_user_input()
@@ -58,9 +59,14 @@ Pages
 -----
 
 .. toctree::
+    :caption: Guides
     :titlesonly:
 
     source/introduction
     source/builtin_generators
-    source/api
     source/migration
+
+.. toctree::
+    :caption: API
+
+    source/api/discapty

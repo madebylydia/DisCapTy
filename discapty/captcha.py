@@ -1,52 +1,41 @@
-#  Copyright (c) 2022​-present - Predeactor - Licensed under the MIT License.
-#  See the LICENSE file included with the file for more information about this project's
-#   license.
-
 import typing
 
+from .constants import CaptchaReturnType
 
-class Captcha:
+
+class Captcha(typing.Generic[CaptchaReturnType]):
     """
     Represent a Captcha object.
-
-
-    .. py:property:: code
-        :type: str
-
-        The code in clear of the Captcha.
-
-    .. py:property:: captcha
-        :type: typing.Any
-
-        The captcha object. This is what's send to the user.
-
-    .. py:property:: type
-        :type: typing.Any
-
-        The type of the captcha object. It is the same as doing ``type(self.captcha)``.
 
 
     .. versionchanged:: 2.0.0
        The Captcha object is no longer what creates the Captcha image, it just is the
        representation of the Captcha that the user will face.
+
+    .. versionchanged:: 2.1.0
+       This class is now a generic class and requires to indicate which type it will receive.
+       (If necessary)
     """
+
+    code: str
+    captcha_object: CaptchaReturnType
+    type: typing.Type[CaptchaReturnType]
 
     def __init__(
         self,
         code: str,
-        captcha_object: typing.Any,
+        captcha_object: CaptchaReturnType,
     ) -> None:
         self.code = code
         self.captcha_object = captcha_object
-
         self.type = type(self.captcha_object)
 
-    def __repr__(self) -> typing.Any:
+    def __repr__(self) -> str:
         return f"<Captcha type={self.type}>"
 
     def check(self, text: str, *, force_casing: bool = False, remove_spaces: bool = True) -> bool:
         """
-        Check if a text is correct to the captcha code.
+        Check if a text is correct against the captcha code.
 
         Parameters
         ----------
@@ -61,7 +50,6 @@ class Captcha:
         ------
         bool:
             True if the answer is correct, False otherwise.
-
         """
         # Remove spaces if needed.
         text = text.replace(" ", "") if remove_spaces else text
