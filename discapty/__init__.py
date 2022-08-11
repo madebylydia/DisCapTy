@@ -9,4 +9,4 @@ from .generators import TextGenerator as TextGenerator
 from .generators import WheezyGenerator as WheezyGenerator
 
 # DisCapTy: Version 2.1.0 - Release Candidate 1
-__version__ = "2.1.0rc1"
+__version__ = "2.1.0"
