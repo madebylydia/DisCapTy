@@ -120,7 +120,8 @@ def text(
     text_color: str = "#5C87B2",
     squeeze_factor: float = 0.8,
 ) -> typing.Callable[[Image.Image, str], Image.Image]:
-    tt_fonts = tuple([ImageFont.truetype(name, size) for name in fonts for size in fonts_sizes])
+    tt_fonts = tuple(ImageFont.truetype(name, size) for name in fonts for size in fonts_sizes)
+
     color = ImageColor.getrgb(text_color)
 
     def render(image: Image.Image, text_input: str) -> Image.Image:
@@ -135,7 +136,7 @@ def text(
         for input_character in text_input:
             # Mostly setting up things here...
             rand_font = choice(tt_fonts)
-            char_width, char_height = draw.textsize(input_character, font=rand_font)
+            _, _, char_width, char_height = draw.textbbox((0, 0), input_character, font=rand_font)
             character = Image.new("RGB", (char_width, char_height), (0, 0, 0))
             character_draw = ImageDraw.Draw(character)
 
@@ -189,7 +190,7 @@ def warp(
         width, height = new_image.size
         return new_image.transform(
             (width, height),
-            Image.QUAD,
+            Image.Transform.QUAD,
             (
                 x1,
                 y1,
@@ -221,6 +222,6 @@ def offset(
 
 def rotate(angle: int = 25) -> typing.Callable[[Image.Image], Image.Image]:
     def render(image: Image.Image):
-        return image.rotate(uniform(-angle, angle), Image.BILINEAR, expand=True)
+        return image.rotate(uniform(-angle, angle), Image.Resampling.BILINEAR, expand=True)
 
     return render
