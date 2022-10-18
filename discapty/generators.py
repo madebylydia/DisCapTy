@@ -273,7 +273,7 @@ class ImageGenerator(Generator[PIL.Image.Image]):
 
         def _draw_character(char: str) -> PIL.Image.Image:
             font = choice(self.get_truefonts())
-            wid, hei = draw.textsize(char, font=font)
+            _, _, wid, hei = draw.textbbox((0, 0), char, font=font)
 
             dx = randint(0, 4)
             dy = randint(0, 6)
@@ -287,7 +287,7 @@ class ImageGenerator(Generator[PIL.Image.Image]):
 
             # Rotate
             im = im.crop(im.getbbox())
-            im = im.rotate(uniform(-30, 30), PIL.Image.BILINEAR, expand=True)
+            im = im.rotate(uniform(-30, 30), PIL.Image.Resampling.BILINEAR, expand=True)
 
             # Warp
             dx = wid * uniform(0.1, 0.3)
@@ -309,7 +309,7 @@ class ImageGenerator(Generator[PIL.Image.Image]):
                 -y1,
             )
             im = im.resize((w2, h2))
-            im = im.transform((wid, hei), PIL.Image.QUAD, data)
+            im = im.transform((wid, hei), PIL.Image.Transform.QUAD, data)
             return im
 
         images: typing.List[PIL.Image.Image] = []
