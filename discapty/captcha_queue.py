@@ -2,12 +2,15 @@ import random
 import typing
 
 from discapty.challenge import Challenge
-from discapty.constants import GeneratorReturnType
 from discapty.errors import NonexistingChallengeError
 from discapty.generators import Generator
 
 
-class CaptchaQueue(typing.Generic[GeneratorReturnType]):
+
+_GR = typing.TypeVar('_GR', covariant=True)
+
+
+class CaptchaQueue(typing.Generic[_GR]):
     """
     A safe handler for taking cares of managing the challenges for the developer.
 
@@ -42,18 +45,18 @@ class CaptchaQueue(typing.Generic[GeneratorReturnType]):
 
     """
 
-    generators: typing.List[Generator[GeneratorReturnType]]
-    queue: typing.Dict[str, Challenge[GeneratorReturnType]]
+    generators: typing.List[Generator[_GR]]
+    queue: typing.Dict[str, Challenge[_GR]]
     __total_challenges: int
 
     def __init__(
         self,
         generators: typing.Union[
-            Generator[GeneratorReturnType],
-            typing.Iterable[Generator[GeneratorReturnType]],
+            Generator[_GR],
+            typing.Iterable[Generator[_GR]],
         ],
         *,
-        queue: typing.Optional[typing.Dict[str, Challenge[GeneratorReturnType]]] = None,
+        queue: typing.Optional[typing.Dict[str, Challenge[_GR]]] = None,
     ) -> None:
         self.generators = []
         if isinstance(generators, Generator):
@@ -70,20 +73,20 @@ class CaptchaQueue(typing.Generic[GeneratorReturnType]):
         retries: typing.Optional[int] = None,
         code: typing.Optional[str] = None,
         code_length: typing.Optional[int] = None,
-    ) -> Challenge[GeneratorReturnType]:
+    ) -> Challenge[_GR]:
         """
         Create a challenge for an id. Overwrite the challenge created before, unless the
         challenge is not fully completed.
 
         Parameters
         ----------
-        challenge_id: Optional, :py:class:`str`
+        challenge_id : Optional, :py:class:`str`
             The id associated to the challenge. If not given, a random id will be generated.
-        retries: Optional, :py:class:`int`
+        retries : Optional, :py:class:`int`
             The number of allowed retries. Defaults to 3.
-        code: Optional, :py:class:`str`
+        code : Optional, :py:class:`str`
             The code to use. Defaults to a random code.
-        code_length: Optional, :py:class:`int`
+        code_length : Optional, :py:class:`int`
             The length of the code to generate if no code is supplied. Defaults to 4.
 
         Returns
@@ -111,7 +114,7 @@ class CaptchaQueue(typing.Generic[GeneratorReturnType]):
         self.__total_challenges += 1
         return challenge
 
-    def get_challenge(self, challenge_id: str) -> Challenge[GeneratorReturnType]:
+    def get_challenge(self, challenge_id: str) -> Challenge[_GR]:
         """
         Get the challenge of an id, if it exist.
 

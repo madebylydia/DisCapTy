@@ -32,8 +32,6 @@ def check_fonts(*fonts: Union[str, Path]) -> Optional[List[str]]:
 
 
 def random_color(start: int = 0, end: int = 255, opacity: int = 0) -> str:
-    # sourcery skip: comprehension-to-generator, invert-any-all
-    # Incorrect suggestion
     """Returns a random color in hexadecimal format.
 
     Parameters
@@ -55,7 +53,7 @@ def random_color(start: int = 0, end: int = 255, opacity: int = 0) -> str:
     :py:exc:`ValueError` :
         If any of `start`, `end` or `opacity` is not contained between 0 and 255.
     """
-    if not all([0 <= attribute <= 255 for attribute in (start, end, opacity)]):
+    if not all(0 <= attribute <= 255 for attribute in (start, end, opacity)):
         raise ValueError("start, end and opacity parameters must be contained between 0 and 255.")
 
     # Simply return a random number...

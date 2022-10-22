@@ -90,7 +90,7 @@ class TestChallenge(unittest.TestCase):
 
     def ensure_last_failure(self):
         """
-        Ensure that the challenge can handle a last sucess before failure.
+        Ensure that the challenge can handle a last success before failure.
         """
         challenge = Challenge(WheezyGenerator())
         challenge.begin()

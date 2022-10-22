@@ -49,7 +49,7 @@ class TestCaptchaQueue(unittest.TestCase):
 
         self.assertEqual(id(challenge), id(created_challenge))
 
-    def test_delete_unexisting_challenge(self):
+    def test_delete_nonexisting_challenge(self):
         """
         Attempt to delete a challenge that does not exist.
         """

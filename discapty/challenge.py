@@ -1,9 +1,8 @@
 import uuid
 from enum import Enum
-from typing import Generic, Optional
+import typing
 
 from discapty.captcha import Captcha
-from discapty.constants import GeneratorReturnType
 from discapty.errors import (
     AlreadyCompletedError,
     AlreadyRunningError,
@@ -44,7 +43,10 @@ class States(Enum):
     FAILURE = "Failure (Unexpected)"
 
 
-class Challenge(Generic[GeneratorReturnType]):
+_CR = typing.TypeVar('_CR')
+
+
+class Challenge(typing.Generic[_CR]):
     """
     Representation of a challenge. A challenge represent the user's Captcha
     question-answer he must face.
@@ -85,7 +87,7 @@ class Challenge(Generic[GeneratorReturnType]):
        If the type is not especially indicated in your variable, it should be automatically done.
     """
 
-    generator: Generator[GeneratorReturnType]
+    generator: Generator[_CR]
     """
     The generator used with this challenge.
     """
@@ -113,21 +115,21 @@ class Challenge(Generic[GeneratorReturnType]):
     """
     The actual state of the challenge.
     """
-    fail_reason: Optional[str]
+    fail_reason: typing.Optional[str]
     """
     The fail reason, if applicable.
     """
-    __last_captcha_class: Optional[Captcha[GeneratorReturnType]]
-    __last_code: Optional[str]
+    __last_captcha_class: typing.Optional[Captcha[_CR]]
+    __last_code: typing.Optional[str]
 
     def __init__(
         self,
-        generator: Generator[GeneratorReturnType],
-        challenge_id: Optional[str] = None,
+        generator: Generator[_CR],
+        challenge_id: typing.Optional[str] = None,
         *,
-        allowed_retries: Optional[int] = None,
-        code: Optional[str] = None,
-        code_length: Optional[int] = None,
+        allowed_retries: typing.Optional[int] = None,
+        code: typing.Optional[str] = None,
+        code_length: typing.Optional[int] = None,
     ) -> None:
         self.generator = generator
 
@@ -153,7 +155,7 @@ class Challenge(Generic[GeneratorReturnType]):
     def _set_state(
         self,
         state: States,
-        fail_reason: Optional[FailReason] = None,
+        fail_reason: typing.Optional[FailReason] = None,
     ) -> None:
         self.state = state
         if (
@@ -173,7 +175,7 @@ class Challenge(Generic[GeneratorReturnType]):
             States.WAITING,
         )
 
-    def _create_captcha(self) -> Captcha[GeneratorReturnType]:
+    def _create_captcha(self) -> Captcha[_CR]:
         if not self.__last_captcha_class or (self.code != self.__last_code):
             generated_captcha = self.generator.generate(self.code)
             self.__last_captcha_class = Captcha(self.code, generated_captcha)
@@ -181,7 +183,7 @@ class Challenge(Generic[GeneratorReturnType]):
         return self.__last_captcha_class
 
     @property
-    def captcha_object(self) -> GeneratorReturnType:
+    def captcha_object(self) -> _CR:
         """
         Get the Captcha object.
 
@@ -193,7 +195,7 @@ class Challenge(Generic[GeneratorReturnType]):
         return self.captcha.captcha_object
 
     @property
-    def captcha(self) -> Captcha[GeneratorReturnType]:
+    def captcha(self) -> Captcha[_CR]:
         """
         The Captcha class associated to this challenge.
 
@@ -217,7 +219,7 @@ class Challenge(Generic[GeneratorReturnType]):
         return self.state in (States.COMPLETED, States.FAILED)
 
     @property
-    def is_correct(self) -> Optional[bool]:
+    def is_correct(self) -> typing.Optional[bool]:
         """
         Check if the challenge has been completed. If not, return None. If failed, return False.
 
@@ -229,7 +231,7 @@ class Challenge(Generic[GeneratorReturnType]):
         return self.state == States.COMPLETED if self.is_completed else None
 
     @property
-    def is_wrong(self) -> Optional[bool]:
+    def is_wrong(self) -> typing.Optional[bool]:
         """
         Check if the challenge has been failed. If not, return None. If completed, return False.
 
@@ -241,7 +243,7 @@ class Challenge(Generic[GeneratorReturnType]):
         """
         return self.state == States.FAILED if self.is_completed else None
 
-    def begin(self) -> GeneratorReturnType:
+    def begin(self) -> _CR:
         """
         Begins the challenge.
 
@@ -329,7 +331,7 @@ class Challenge(Generic[GeneratorReturnType]):
 
     def reload(
         self, *, increase_attempted_tries: bool = True, increase_failures: bool = False
-    ) -> GeneratorReturnType:
+    ) -> _CR:
         """
         Reload the Challenge and its code.
 

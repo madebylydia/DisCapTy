@@ -1,9 +1,10 @@
 import typing
 
-from .constants import CaptchaReturnType
+
+_CR = typing.TypeVar('_CR')
 
 
-class Captcha(typing.Generic[CaptchaReturnType]):
+class Captcha(typing.Generic[_CR]):
     """
     Represent a Captcha object.
 
@@ -18,13 +19,13 @@ class Captcha(typing.Generic[CaptchaReturnType]):
     """
 
     code: str
-    captcha_object: CaptchaReturnType
-    type: typing.Type[CaptchaReturnType]
+    captcha_object: _CR
+    type: typing.Type[_CR]
 
     def __init__(
         self,
         code: str,
-        captcha_object: CaptchaReturnType,
+        captcha_object: _CR,
     ) -> None:
         self.code = code
         self.captcha_object = captcha_object

@@ -13,7 +13,6 @@ import PIL.ImageFont
 import pydantic
 from pydantic.color import Color
 
-from discapty.constants import GeneratorReturnType
 from discapty.utils import random_color
 
 from .wheezylib import image as wheezy_captcha
@@ -22,7 +21,10 @@ PATH: str = join(abspath(dirname(__file__)), "fonts")
 DEFAULT_FONTS: typing.List[str] = [join(PATH, f) for f in listdir(PATH) if isfile(join(PATH, f))]
 
 
-class Generator(ABC, pydantic.BaseModel, typing.Generic[GeneratorReturnType]):
+_GR = typing.TypeVar('_GR')
+
+
+class Generator(ABC, pydantic.BaseModel, typing.Generic[_GR]):
     """
     Base class for all generators.
 
@@ -80,7 +82,9 @@ class Generator(ABC, pydantic.BaseModel, typing.Generic[GeneratorReturnType]):
     class Config:
         """
         :meta private:
-        legit no one cares about this class
+        
+        Configure the Generator.
+        Basically means that everything must be validated.
         """
 
         validate_all = True
@@ -111,7 +115,7 @@ class Generator(ABC, pydantic.BaseModel, typing.Generic[GeneratorReturnType]):
         return [key for key, value in self.__fields__.items() if not value.required]
 
     @abstractmethod
-    def generate(self, text: str) -> GeneratorReturnType:
+    def generate(self, text: str) -> _GR:
         """
         A method that needs to be implemented by the child class.
         This method will return the Captcha that the user has requested. See class's docstring.

@@ -38,7 +38,7 @@ class TestTextGenerator(unittest.TestCase):
         Test the generate method of TextGenerator.
         """
         text = "WORK"
-        expected_output = r"W+O+R+K"
+        expected_output = "W+O+R+K"
 
         output = TextGenerator(separator="+").generate(text)
         self.assertEqual(output, expected_output)
