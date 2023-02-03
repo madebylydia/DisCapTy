@@ -8,5 +8,5 @@ from .generators import ImageGenerator as ImageGenerator
 from .generators import TextGenerator as TextGenerator
 from .generators import WheezyGenerator as WheezyGenerator
 
-# DisCapTy: Version 2.1.1
-__version__ = "2.1.1"
+# DisCapTy: Version 2.1.2
+__version__ = "2.1.2"

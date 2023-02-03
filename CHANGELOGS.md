@@ -1,5 +1,14 @@
 # CHANGELOGS
 
+## Stable 2.1.2
+
+* Support Python 3.11
+* Upgrade dependencies
+
+## Stable 2.1.1
+
+* Upgrade Pillow to 9.2.0
+
 ## Stable 2.1.0
 
 **This release present important changes for generators. You're advised to read the migration guide to know what to do in order to update your code.**
