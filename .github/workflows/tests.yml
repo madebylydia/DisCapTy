@@ -37,7 +37,7 @@ jobs:
           cache: 'poetry'
 
       - name: Install dependencies and DisCapTy
-        run: pip install tox tox-gh-actions
+        run: poetry install
 
       # Run DisCapTy's tests
       - name: Run tests
