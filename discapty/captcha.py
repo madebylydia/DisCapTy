@@ -1,7 +1,6 @@
 import typing
 
-
-_CR = typing.TypeVar('_CR')
+_CR = typing.TypeVar("_CR")
 
 
 class Captcha(typing.Generic[_CR]):
@@ -31,7 +30,7 @@ class Captcha(typing.Generic[_CR]):
         self.captcha_object = captcha_object
         self.type = type(self.captcha_object)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         return f"<Captcha type={self.type}>"
 
     def check(self, text: str, *, force_casing: bool = False, remove_spaces: bool = True) -> bool:

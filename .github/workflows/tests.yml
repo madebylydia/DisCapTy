@@ -41,4 +41,10 @@ jobs:
 
       # Run DisCapTy's tests
       - name: Run tests
-        run: poetry run tox
+        run: poetry run make test
+
+      - name: Export Coverage
+        run: poetry run coverage json
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3

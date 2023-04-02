@@ -1,0 +1,5 @@
+[run]
+source = discapty
+
+[html]
+directory = tests/coverage_html_report

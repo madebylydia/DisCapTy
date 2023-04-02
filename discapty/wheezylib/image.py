@@ -97,9 +97,9 @@ def noise(
     def render(image: Image.Image, _: str):
         width, height = image.size
         dx = width / 10
-        width = width - dx
+        width = int(width - dx)
         dy = height / 10
-        height = height - dy
+        height = int(height - dy)
         draw = ImageDraw.Draw(image)
 
         for __ in range(noise_number):

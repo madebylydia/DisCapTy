@@ -4,7 +4,15 @@
 
 import unittest
 
-from discapty import Challenge, States, TooManyRetriesError, WheezyGenerator
+from discapty import (
+    AlreadyCompletedError,
+    AlreadyRunningError,
+    Challenge,
+    ChallengeCompletionError,
+    States,
+    TooManyRetriesError,
+    WheezyGenerator,
+)
 
 
 class TestChallenge(unittest.TestCase):
@@ -27,6 +35,23 @@ class TestChallenge(unittest.TestCase):
         challenge.begin()
 
         self.assertIs(challenge.state, States.WAITING)
+
+    def test_can_not_begin(self):
+        """
+        Check that the challenge cannot begin.
+        """
+        challenge = Challenge(WheezyGenerator())
+        challenge.state = States.FAILED
+        self.assertRaises(TooManyRetriesError, challenge.begin)
+
+        challenge.state = States.FAILURE
+        self.assertRaises(ChallengeCompletionError, challenge.begin)
+
+        challenge.state = States.COMPLETED
+        self.assertRaises(AlreadyCompletedError, challenge.begin)
+
+        challenge.state = States.WAITING
+        self.assertRaises(AlreadyRunningError, challenge.begin)
 
     def test_can_be_reloaded(self):
         """
@@ -88,7 +113,7 @@ class TestChallenge(unittest.TestCase):
         with self.assertRaises(TooManyRetriesError):
             challenge.check("random")
 
-    def ensure_last_failure(self):
+    def test_ensure_last_failure(self):
         """
         Ensure that the challenge can handle a last success before failure.
         """
@@ -100,6 +125,55 @@ class TestChallenge(unittest.TestCase):
             challenge.check("random")
 
         self.assertTrue(challenge.check(challenge.code))
+
+    def test_increase_attempted_tries_on_reload(self):
+        """
+        Ensure the challenge increases the failure by one if specified.
+        """
+        challenge = Challenge(WheezyGenerator())
+        challenge.begin()
+        actual_tries = challenge.attempted_tries
+        challenge.reload(increase_attempted_tries=True)
+
+        self.assertGreater(challenge.attempted_tries, actual_tries)
+
+    def test_increase_failure_on_reload(self):
+        """
+        Ensure the challenge increases the failure by one if specified.
+        """
+        challenge = Challenge(WheezyGenerator())
+        challenge.begin()
+        actual_failures = challenge.failures
+        challenge.reload(increase_failures=True)
+
+        self.assertGreater(challenge.failures, actual_failures)
+
+    def test_cant_reload_on_failed(self):
+        """
+        Ensure the challenge can't be modified on reload.
+        """
+        challenge = Challenge(WheezyGenerator())
+        challenge.state = States.FAILED
+
+        self.assertRaises(TypeError, challenge.reload)
+
+    def test_cant_check(self):
+        """
+        Ensure the challenge cannot be checked if not modifiable
+        """
+        challenge = Challenge(WheezyGenerator())
+        challenge.state = States.FAILED
+        
+        self.assertRaises(TypeError, challenge.check)
+
+    def test_cant_cancel(self):
+        """
+        Ensure the challenge cannot be cancelled if not modifiable
+        """
+        challenge = Challenge(WheezyGenerator())
+        challenge.state = States.FAILED
+        
+        self.assertRaises(TypeError, challenge.cancel)
 
     def test_casing_enforcement(self):
         """

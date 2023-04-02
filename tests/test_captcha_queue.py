@@ -2,12 +2,12 @@ import unittest
 
 import discapty
 from discapty import CaptchaQueue, Challenge
-from discapty.generators import TextGenerator
+from discapty.generators import TextGenerator, WheezyGenerator
 
 
 class TestCaptchaQueue(unittest.TestCase):
     def setUp(self) -> None:
-        self.queue = CaptchaQueue(TextGenerator())
+        self.queue: CaptchaQueue[str] = CaptchaQueue(TextGenerator())
 
     def test_create_queue_with_missing_gen(self):
         """
@@ -21,6 +21,11 @@ class TestCaptchaQueue(unittest.TestCase):
         Attempt to create a queue.
         """
         self.assertIsInstance(self.queue, CaptchaQueue)
+
+    def test_create_queue_with_multiple_generators(self):
+        self.assertIsInstance(
+            CaptchaQueue([TextGenerator(), WheezyGenerator()]), CaptchaQueue
+        )  # pyright: reportGeneralTypeIssues=false
 
     def test_create_challenge(self):
         """

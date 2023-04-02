@@ -5,9 +5,7 @@ from discapty.challenge import Challenge
 from discapty.errors import NonexistingChallengeError
 from discapty.generators import Generator
 
-
-
-_GR = typing.TypeVar('_GR', covariant=True)
+_GR = typing.TypeVar("_GR", covariant=True)
 
 
 class CaptchaQueue(typing.Generic[_GR]):

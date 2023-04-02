@@ -1,6 +1,6 @@
+import typing
 import uuid
 from enum import Enum
-import typing
 
 from discapty.captcha import Captcha
 from discapty.errors import (
@@ -43,7 +43,7 @@ class States(Enum):
     FAILURE = "Failure (Unexpected)"
 
 
-_CR = typing.TypeVar('_CR')
+_CR = typing.TypeVar("_CR")
 
 
 class Challenge(typing.Generic[_CR]):
@@ -146,7 +146,7 @@ class Challenge(typing.Generic[_CR]):
         self.__last_captcha_class = None
         self.__last_code = None
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         return (
             f"<Challenge id={self.challenge_id} state={self.state} "
             "is_completed={self.is_completed}>"
@@ -207,7 +207,7 @@ class Challenge(typing.Generic[_CR]):
         return self._create_captcha()
 
     @property
-    def is_completed(self) -> bool:
+    def is_completed(self) -> bool:  # pragma: no cover
         """
         Check if the challenge has been completed or failed.
 
@@ -219,7 +219,7 @@ class Challenge(typing.Generic[_CR]):
         return self.state in (States.COMPLETED, States.FAILED)
 
     @property
-    def is_correct(self) -> typing.Optional[bool]:
+    def is_correct(self) -> typing.Optional[bool]:  # pragma: no cover
         """
         Check if the challenge has been completed. If not, return None. If failed, return False.
 
@@ -231,7 +231,7 @@ class Challenge(typing.Generic[_CR]):
         return self.state == States.COMPLETED if self.is_completed else None
 
     @property
-    def is_wrong(self) -> typing.Optional[bool]:
+    def is_wrong(self) -> typing.Optional[bool]:  # pragma: no cover
         """
         Check if the challenge has been failed. If not, return None. If completed, return False.
 

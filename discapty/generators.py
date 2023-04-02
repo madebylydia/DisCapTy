@@ -21,7 +21,7 @@ PATH: str = join(abspath(dirname(__file__)), "fonts")
 DEFAULT_FONTS: typing.List[str] = [join(PATH, f) for f in listdir(PATH) if isfile(join(PATH, f))]
 
 
-_GR = typing.TypeVar('_GR')
+_GR = typing.TypeVar("_GR")
 
 
 class Generator(ABC, pydantic.BaseModel, typing.Generic[_GR]):
@@ -82,7 +82,7 @@ class Generator(ABC, pydantic.BaseModel, typing.Generic[_GR]):
     class Config:
         """
         :meta private:
-        
+
         Configure the Generator.
         Basically means that everything must be validated.
         """
@@ -294,8 +294,8 @@ class ImageGenerator(Generator[PIL.Image.Image]):
             im = im.rotate(uniform(-30, 30), PIL.Image.Resampling.BILINEAR, expand=True)
 
             # Warp
-            dx = wid * uniform(0.1, 0.3)
-            dy = hei * uniform(0.2, 0.3)
+            dx = int(wid * uniform(0.1, 0.3))
+            dy = int(hei * uniform(0.2, 0.3))
             x1 = int(uniform(-dx, dx))
             y1 = int(uniform(-dy, dy))
             x2 = int(uniform(-dx, dx))
