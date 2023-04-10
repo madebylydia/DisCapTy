@@ -30,7 +30,7 @@ Before you ask a question, it is best to search for existing [Issues](https://gi
 
 If you then still feel the need to ask a question and need clarification, we recommend the following:
 
-- Join the [Discord Server](https://discord.gg/aPVupKAxxP)
+- Join the [Discord Server](https://discord.gg/WdcFUH7ths)
 - Open an [Issue](https://github.com/Predeactor/DisCapTy/issues/new).
 - Provide as much context as you can about what you're running into.
 - Provide project and platform versions (Python, OS, etc.), depending on what seems relevant.
