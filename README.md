@@ -113,7 +113,7 @@ Please see the [documentation](https://discapty.readthedocs.io/) for more inform
 
 ## Contact
 
-You can join my Discord server for any help: <https://discord.gg/aPVupKAxxP>
+You can join my Discord server for any help: <https://discord.gg/WdcFUH7ths>
 
 DisCapTy is an open-source project distributed under the MIT license:
 ![PyPI - License](https://img.shields.io/pypi/l/discapty?style=flat-square)
