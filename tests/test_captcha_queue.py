@@ -14,7 +14,7 @@ class TestCaptchaQueue(unittest.TestCase):
         Attempt to create a queue and fail because of missing generator(s)
         """
         with self.assertRaises(TypeError):
-            queue = CaptchaQueue()  # type: ignore
+            CaptchaQueue()  # type: ignore
 
     def test_create_queue(self):
         """
@@ -24,8 +24,8 @@ class TestCaptchaQueue(unittest.TestCase):
 
     def test_create_queue_with_multiple_generators(self):
         self.assertIsInstance(
-            CaptchaQueue([TextGenerator(), WheezyGenerator()]), CaptchaQueue
-        )  # pyright: reportGeneralTypeIssues=false
+            CaptchaQueue([TextGenerator(), WheezyGenerator()]), CaptchaQueue  # pyright: ignore[reportGeneralTypeIssues]
+        )
 
     def test_create_challenge(self):
         """

@@ -17,11 +17,11 @@ test:
 	@coverage html
 
 format:
-	@black aspreno
-	@isort aspreno
+	@black discapty
+	@isort discapty
 
 lint:
-	@mypy aspreno
+	@mypy discapty
 
 help:
-	@echo "$$HELP_COMMAND"
+	@$(info $(HELP_COMMAND))

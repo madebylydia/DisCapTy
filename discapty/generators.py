@@ -11,7 +11,7 @@ import PIL.ImageDraw
 import PIL.ImageFilter
 import PIL.ImageFont
 import pydantic
-from pydantic.color import Color
+from pydantic_extra_types.color import Color
 
 from discapty.utils import random_color
 
@@ -78,17 +78,11 @@ class Generator(ABC, pydantic.BaseModel, typing.Generic[_GR]):
 
        This class is now a generic class, taking as the parameter the type output of ".generate".
     """
-
-    class Config:
-        """
-        :meta private:
-
-        Configure the Generator.
-        Basically means that everything must be validated.
-        """
-
-        validate_all = True
-        validate_assignment = True
+    
+    model_config = pydantic.ConfigDict(
+        validate_default=True,
+        validate_assignment=True,
+    )
 
     @property
     def required_keys(self) -> typing.List[str]:
@@ -100,7 +94,7 @@ class Generator(ABC, pydantic.BaseModel, typing.Generic[_GR]):
         List of :py:class:`str` :
             The list of required keys.
         """
-        return [key for key, value in self.__fields__.items() if value.required]
+        return [key for key, value in self.model_fields.items() if value.is_required()]
 
     @property
     def optional_keys(self) -> typing.List[str]:
@@ -112,7 +106,7 @@ class Generator(ABC, pydantic.BaseModel, typing.Generic[_GR]):
         List of :py:class:`str` :
             The list of optional keys.
         """
-        return [key for key, value in self.__fields__.items() if not value.required]
+        return [key for key, value in self.model_fields.items() if not value.is_required()]
 
     @abstractmethod
     def generate(self, text: str) -> _GR:
@@ -147,13 +141,11 @@ class WheezyGenerator(Generator[PIL.Image.Image]):
     noise_color: Color = "#EEEECC"  # type: ignore
     noise_level: int = 2
 
-    @pydantic.validator("fonts_size")
-    def as_many_size_as_fonts(
-        cls, v: typing.Tuple[int, ...], values: typing.Dict[str, typing.Any]
-    ):
-        if "fonts" in values and len(v) != len(values["fonts"]):
+    @pydantic.model_validator(mode='after')
+    def as_many_size_as_fonts(self):
+        if len(self.fonts) != len(self.fonts_size):
             raise ValueError("The number of fonts_size must be equal to the number of fonts")
-        return v
+        return self
 
     def generate(self, text: str) -> PIL.Image.Image:
         """
@@ -213,7 +205,7 @@ class ImageGenerator(Generator[PIL.Image.Image]):
     fonts_size: typing.Tuple[int, ...] = (50,)
 
     background_color: Color = pydantic.Field(random_color(238, 255))
-    text_color: Color = pydantic.Field(random_color(10, 200, 100))
+    text_color: Color
     number_of_dots: int = 100
     width_of_dots: int = 3
     number_of_curves: int = 1
@@ -313,7 +305,7 @@ class ImageGenerator(Generator[PIL.Image.Image]):
                 -y1,
             )
             im = im.resize((w2, h2))
-            im = im.transform((wid, hei), PIL.Image.Transform.QUAD, data)
+            im = im.transform((wid, hei), PIL.Image.Transform.QUAD, data)  # type: ignore
             return im
 
         images: typing.List[PIL.Image.Image] = []
