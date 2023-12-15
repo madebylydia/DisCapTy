@@ -46,7 +46,7 @@ jobs:
 
       # Run DisCapTy's tests
       - name: Run tests
-        run: poetry run make test
+        run: poetry run poe test
 
       - name: Export Coverage
         run: poetry run coverage json
