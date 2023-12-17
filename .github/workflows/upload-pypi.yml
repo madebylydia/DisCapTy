@@ -9,31 +9,22 @@ jobs:
     uses: ./.github/workflows/prepare-release.yml
 
   deploy:
-    if: github.repository == 'Predeactor/DisCapTy'
+    if: github.repository == 'madebylydia/DisCapTy'
     runs-on: ubuntu-latest
     environment: release
     name: Deploy DisCapTy to PyPi.
     needs: pre-release
 
     steps:
-    - uses: actions/checkout@v2
-
-    # Load the cached installation of Poetry
-    - name: Load cached Poetry installation
-      id: cached-poetry
-      uses: actions/cache@v2
-      with:
-        path: ~/.local
-        key: poetry-${{ runner.os }}
+    - uses: actions/checkout@v4
 
     # Install & configure Poetry
     - name: Install Poetry
-      if: steps.cached-poetry.outputs.cache-hit != 'true'
-      uses: snok/install-poetry@v1
+      uses: pipx install poetry==1.7.1
 
     # Install Python
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
         cache: 'poetry'

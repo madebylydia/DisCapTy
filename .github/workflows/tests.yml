@@ -16,15 +16,7 @@ jobs:
     name: Tox on ${{ matrix.os }} - v${{ matrix.python-version }}
 
     steps:
-      - uses: actions/checkout@v2
-
-      # Load the cached installation of Poetry
-      - name: Load cached Poetry installation
-        id: cached-poetry
-        uses: actions/cache@v2
-        with:
-          path: ~/.local
-          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+      - uses: actions/checkout@v4
 
       # Install & configure Poetry
       - name: Install Poetry
@@ -37,13 +29,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: 'poetry'
 
-      - name: Setup poetry
-        run: |
-          poetry config virtualenvs.create true --local
-          poetry config virtualenvs.in-project true --local
-
       - name: Install dependencies and DisCapTy
-        run: poetry install
+        run: poetry install -n
 
       # Run DisCapTy's tests
       - name: Run tests
