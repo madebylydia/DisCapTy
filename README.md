@@ -1,5 +1,14 @@
 # DisCapTy
 
+> [!CAUTION]  
+> As of 19 April 2024, this repository has been officially dropped and is **no longer supported**.
+> The reasons are:
+> - I no longer work on image-related projects.
+> - I do not want to deal with Python for my personnal projects.
+> - I believe there's no real need for me to keep this project "as alive" when I do not plan to commit ever again.
+> 
+> As such, this repository will now be archived. I hope you understand this decision. If you'd like to, feel free to fork this repository, make changes, and enjoy it yourself.
+
 ![DisCapTy's Logo](.github/logo.png#gh-dark-mode-only)![DisCapTy's Logo](.github/logo-dark.png#gh-light-mode-only)
 
 DisCapTy is a highly type hinted Python module to generate Captcha images without struggling your mind on how to make your own. Everyone can use it!
